@@ -55,6 +55,20 @@ if (is_file(ROOT_PATH . '.env')) {
     }
 }
 
+// --selfconfig 根据ip设置环境变量
+$env = array(
+    '127.0.0.1' => 'local',
+    '127.0.0.2' => 'beta',    
+    '127.0.0.4' => 'online',
+    );
+$server_ip = $_SERVER['SERVER_ADDR'];
+if(isset($env[$server_ip])){
+    $env = 'environment='.$env[$server_ip];
+    putenv($env);
+}
+
+
+
 // 注册自动加载
 \think\Loader::register();
 

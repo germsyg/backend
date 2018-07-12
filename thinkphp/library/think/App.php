@@ -249,9 +249,32 @@ class App
             $config = Config::load(CONF_PATH . $module . 'config' . CONF_EXT);
 
             // 读取数据库配置文件
-            $filename = CONF_PATH . $module . 'database' . CONF_EXT;
-            Config::load($filename, 'database');
-
+            // $filename = CONF_PATH . $module . 'database' . CONF_EXT;            
+            // Config::load($filename, 'database');
+            
+            // --selfconfig 根据环境来加载数据库等配置
+            $env = getenv('environment');            
+            if (is_dir(CONF_PATH . 'environment' . DS . $env)) {
+                $dir = CONF_PATH . 'environment' . DS . $env;                       
+                $files = scandir($dir);                
+                foreach ($files as $file) {
+                    if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
+                        $filename = $dir . DS . $file;
+                        Config::load($filename, pathinfo($file, PATHINFO_FILENAME));
+                    }
+                }                
+            }
+            // 添加define配置
+            if (is_dir(CONF_PATH . DS . 'define')) {
+                $dir = CONF_PATH . DS . 'define';                       
+                $files = scandir($dir);                
+                foreach ($files as $file) {
+                    if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
+                        $filename = $dir . DS . $file;
+                        require_once($filename);
+                    }
+                }                
+            }            
             // 读取扩展配置文件
             if (is_dir(CONF_PATH . $module . 'extra')) {
                 $dir   = CONF_PATH . $module . 'extra';
@@ -275,7 +298,7 @@ class App
             }
 
             // 加载公共文件
-            $path = APP_PATH . $module;
+            $path = APP_PATH . $module;            
             if (is_file($path . 'common' . EXT)) {
                 include $path . 'common' . EXT;
             }
