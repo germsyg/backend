@@ -9,4 +9,12 @@ class Login extends Controller
     {    
         return $this->fetch();
     }    
+
+    public function check()
+    {
+    	$res['status'] = 1;
+    	$res['msg'] = 'success';
+    	$res['data'] = input('post.');
+    	return $res;
+    }
 }
