@@ -22,7 +22,7 @@
         <div id="darkbannerwrap"></div>
         
         <form method="post" class="layui-form" >
-            <input name="email" placeholder="邮箱"  type="text" lay-verify="required|email" class="layui-input" >
+            <input name="email" placeholder="邮箱"  type="text" lay-verify="required|email" class="layui-input" value="xiao@gmail.com">
             <hr class="hr15">
             <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
             <hr class="hr15">
@@ -36,14 +36,18 @@
             layui.use('form', function(){
                 var form = layui.form;
                 //监听提交
-                form.on('submit(login)', function(data){                    
-                    console.log(data);
+                form.on('submit(login)', function(data){                                        
                     $.ajax({
                         url: "{:url('/backend/login/check', '', '')}",
                         type: "post",
                         data: data.field,
-                        success:function(result){
-                            // window.location.href = "{:url('/backend/index/index')}";
+                        success:function(res){
+                            if(res.status == 1){
+                                window.location.href = "{:url('Index/index')}";
+                            }else{
+                                layer.msg(res.msg);
+                            }
+
                         }
                     });
                     return false;
