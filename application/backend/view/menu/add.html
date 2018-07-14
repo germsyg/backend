@@ -1,0 +1,99 @@
+{extend name="common/base" /}
+{block name="header"}
+<link rel="stylesheet" href="/static/backend/css/font.css">
+<link rel="stylesheet" href="/static/backend/css/xadmin.css">
+{/block}
+{block name="content"}
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">
+                <span class="x-red">*</span>菜单名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="url" class="layui-form-label">
+                <span class="x-red">*</span>菜单链接
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="url" name="url" required="" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>        
+        <div class="layui-form-item">
+            <label for="parent_id" class="layui-form-label">
+                <span class="x-red">*</span>菜单树
+            </label>
+            <div class="layui-input-inline">
+                <select name="parent_id" lay-verify="">                    
+                    <option value="0">一级菜单</option>
+                    {volist name="menu" id="m"}
+                        <option value="{$m.id}">{$m.name}</option> 
+                    {/volist}
+                </select>      
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>  
+        <div class="layui-form-item">
+            <label for="icon" class="layui-form-label">
+                <span class="x-red"></span>菜单小图标
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="icon" name="icon" required="" lay-verify="" autocomplete="off" class="layui-input" placeholder="图标代码如：  &amp;#xe69e;">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red"><a href="{:url('Common/icon')}" target="_blank">示例图标代码</a></span>
+            </div>
+        </div>        
+
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('Menu/handle', '', '')}">
+                增加
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+layui.use(['form','layer'], function(){
+    $ = layui.jquery;
+    var form = layui.form
+    ,layer = layui.layer;
+
+
+    //监听提交
+    form.on('submit(add)', function(data){
+        $.ajax({
+            url: $(this).attr('url'),
+            type: "post",
+            data: data.field,
+            success:function(res){
+                if(res.status == 1){
+                    layer.msg(res.msg);
+                    // var index = parent.layer.getFrameIndex(window.name);
+                    // //关闭当前frame
+                    // parent.layer.close(index);
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        });
+        return false;
+    });
+
+
+});
+</script>
+
+{/block}

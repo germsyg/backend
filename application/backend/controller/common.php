@@ -13,5 +13,11 @@ class Common extends Backend
         return $this->fetch();
     }
 
+
+    public function icon()
+    {
+    	return $this->fetch();	
+    }
+
     
 }

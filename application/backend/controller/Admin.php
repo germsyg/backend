@@ -3,7 +3,7 @@ namespace app\backend\controller;
 use think\Config;
 use think\Db;
 
-class Index extends Backend
+class Admin extends Backend
 {
     public function index()
     {            
