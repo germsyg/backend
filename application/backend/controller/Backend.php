@@ -24,7 +24,7 @@ class Backend extends Controller
      * @param  [type] $data  [description]
      * @return [type]        [description]
      */
-    protected function edit($table='', $data='', $where='')
+    protected function editBE($table='', $data='', $where='')
     {
     	if(!$table){
     		return false;
@@ -51,7 +51,7 @@ class Backend extends Controller
      * @param  boolean $isCount [description]
      * @return [type]           [description]
      */
-    protected function select($table, $where='', $field='*', $page=1, $limit=50, $isCount=false)
+    protected function selectBE($table, $where='', $field='*', $page=1, $limit=50, $isCount=false)
     {
     	if(!$table){
     		return false;
@@ -61,17 +61,30 @@ class Backend extends Controller
     		$type = 'count';
     	}else{
     		$type = 'select';
-    		if($page != 0){
-    			// 0则查询所有数据
+    		if($where != 'all' || $page == 0){  
+    			// where为all时，放弃分页
     			$obj->page("{$page}, {$limit}");
     		}
     		$obj->field($field);
     	}
+    	if($where != 'all'){
+    		$obj->where($where);
+    	}
 
-    	$res = $obj->where($where)->fetchSql($this->fetchSql)->$type();
+    	$res = $obj->fetchSql($this->fetchSql)->$type();
     	return $res;
     }
 
+    public function findBE($table, $where='', $field='*')
+    {
+    	if(!$table){
+    		return false;
+    	}
+    	$obj = db($table);    	
+
+    	$res = $obj->where($where)->fetchSql($this->fetchSql)->find();
+    	return $res;
+    }
 
     /**
      * 后台数据count查询
@@ -80,7 +93,7 @@ class Backend extends Controller
      * @param  string $where [description]
      * @return [type]        [description]
      */
-    protected function count($table, $where='')
+    protected function countBE($table, $where='')
     {
 		return db($table)->where($where)->fetchSql($this->fetchSql)->count();
     }

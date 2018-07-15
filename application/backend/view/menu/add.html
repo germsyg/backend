@@ -11,7 +11,7 @@
                 <span class="x-red">*</span>菜单名称
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input">
+                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <span class="x-red">*</span>
@@ -22,7 +22,7 @@
                 <span class="x-red">*</span>菜单链接
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="url" name="url" required="" lay-verify="required" autocomplete="off" class="layui-input">
+                <input type="text" id="url" name="url" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.url|default=''}">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <span class="x-red">*</span>
@@ -33,10 +33,11 @@
                 <span class="x-red">*</span>菜单树
             </label>
             <div class="layui-input-inline">
-                <select name="parent_id" lay-verify="">                    
+                <select name="parent_id" lay-verify="" lay-filter="parent_id">                    
                     <option value="0">一级菜单</option>
                     {volist name="menu" id="m"}
-                        <option value="{$m.id}">{$m.name}</option> 
+                        <option value="{$m.id}" {present name="$info.parent_id"}{if condition="$m.id==$info.parent_id"}selected{/if}{/present}{present name="$pid_selected"}{if condition="$m.id==$pid_selected"}selected{/if}{/present}>{$m.level-1|str_repeat='&nbsp;&nbsp;', ###}|--{$m.name}
+                        </option> 
                     {/volist}
                 </select>      
             </div>
@@ -49,18 +50,18 @@
                 <span class="x-red"></span>菜单小图标
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="icon" name="icon" required="" lay-verify="" autocomplete="off" class="layui-input" placeholder="图标代码如：  &amp;#xe69e;">
+                <input type="text" id="icon" name="icon" required="" lay-verify="" autocomplete="off" class="layui-input" placeholder="图标代码如：  &amp;#xe69e;" value="{$info.icon|default=''|str_replace='&', '&amp;', ###}">
             </div>
             <div class="layui-form-mid layui-word-aux">
                 <span class="x-red"><a href="{:url('Common/icon')}" target="_blank">示例图标代码</a></span>
             </div>
         </div>        
-
+        <input name="id" type="hidden" value="{$info.id|default=''}">
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label">
             </label>
             <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('Menu/handle', '', '')}">
-                增加
+                保存
             </button>
         </div>
     </form>
@@ -71,19 +72,19 @@ layui.use(['form','layer'], function(){
     var form = layui.form
     ,layer = layui.layer;
 
-
     //监听提交
-    form.on('submit(add)', function(data){
+    form.on('submit(add)', function(data){        
         $.ajax({
             url: $(this).attr('url'),
             type: "post",
             data: data.field,
             success:function(res){
-                if(res.status == 1){
-                    layer.msg(res.msg);
-                    // var index = parent.layer.getFrameIndex(window.name);
-                    // //关闭当前frame
-                    // parent.layer.close(index);
+                if(res.status == 1){                    
+                    layer.alert("增加成功", {icon: 6},function () {                        
+                        var index = parent.layer.getFrameIndex(window.name);                        
+                        parent.layer.close(index);
+                        parent.location.reload();
+                    });
                 }else{
                     layer.msg(res.msg);
                 }
