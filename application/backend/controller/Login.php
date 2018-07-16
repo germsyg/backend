@@ -84,6 +84,7 @@ class Login extends Controller
     private function login($info)
     {
     	// session 录入
+        Session::set('user.id', $info['id']);
 		Session::set('user.email', $info['email']);
 		Session::set('user.name', $info['name']);
 		Session::set('user.last_login_ip', $info['last_login_ip']);
