@@ -10,12 +10,11 @@ class Menu extends Backend
 	public $table = 'menu';
 
     public function index()
-    {            
+    {                    
         $menu = $this->selectBE($this->table, 'all');
-        $menu = tree($menu);
-        // var_dump($menu);
-        $menu = sortTree($menu);
-        // var_dump($menu);die;
+        $menu = tree($menu);        
+        $menu = sortTree($menu);        
+        $this->assign('total', count($menu));
         $this->assign('menu', $menu);
         return $this->fetch();
     }    
@@ -82,17 +81,18 @@ class Menu extends Backend
 
     public function modify()
     {
-        sleep(2);
+        
         $id = input('param.id');
         $data = Request::instance()->only(['status', 'sort']);
-        // var_dump($data);
-        // var_dump($id);
-        $where['id'] = $id;
-        // $res = $this->editBE($this->table, $data, $where);
-        // if($res){
-        //     return $this->suc;
-        // }else{
+
+        $where['id'] = $id;        
+        $res = $this->editBE($this->table, $data, $where);
+        
+        if($res){
+            return $this->suc;
+        }else{
+            $this->fai['msg'] = '更新失败，稍后再试';
             return $this->fai;
-        // }
+        }
     }
 }

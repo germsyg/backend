@@ -40,7 +40,7 @@ class Backend extends Controller
         if(!$this->fetchSql){
             $this->log($table, $data, $where);
         }
-    	return $res;
+    	return $res !== false;
     }
 
     /**
