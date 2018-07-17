@@ -20,7 +20,33 @@ class Backend extends Controller
     // true为返回sql
     protected $fetchSql = false;
 
-
+    protected function lists($table, $where='', $field='*', $other=[])
+    {        
+        if(!$table){
+            return false;
+        }       
+        $obj = db($table);
+        
+        
+        $page = isset($other['page']) ? $other['page'] : 1;
+        $limit = isset($other['limit']) ? $other['limit'] : 50;
+        if($where != 'all' || $page != 0){
+            // where为all时，放弃分页
+            $obj->page("{$page}, {$limit}");
+        }
+        if(isset($other['order'])){             
+            $obj->order($other['order']['key'], $other['order']['sort']);
+        }
+        $obj->field($field);
+        
+        if($where != 'all'){
+            $obj->where($where);
+        }
+        $total = $obj->count();
+        $this->assign('total', $total);
+        $res = $obj->fetchSql($this->fetchSql)->select();        
+        return $res;
+    }
 
     /**
      * 后台数据编辑器，统一处理添加、编辑

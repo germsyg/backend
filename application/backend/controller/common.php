@@ -19,5 +19,14 @@ class Common extends Backend
     	return $this->fetch();	
     }
 
-    
+    public function generalPwd($pwd, $salt)
+    {
+        $code = 'mvy#@$DFG^sdf0';
+        return md5($pwd.$code.$salt);
+    }
+
+    public function vertifyPwd($pwd, $data_pwd, $salt)
+    {
+
+    }
 }

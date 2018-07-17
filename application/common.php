@@ -31,6 +31,12 @@ function tree($data, $pid=0, $level=1) {
     return $tree;
 }
 
+/**
+ * 格式化树，适合表格输出
+ * @author XZJ @date 2018-07-17T20:36:26+0800
+ * @param  [type] $data [description]
+ * @return [type]       [description]
+ */
 function sortTree($data)
 {
 	$tmp = [];
@@ -44,4 +50,19 @@ function sortTree($data)
 		}
 	}
 	return $tmp;
+}
+
+/**
+ * 随机字符串
+ * @author XZJ @date 2018-07-17T20:39:12+0800
+ * @param  integer $length [description]
+ * @return [type]          [description]
+ */
+function randomString($length = 6) { 
+	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
+	$randomString = ''; 
+	for ($i = 0; $i < $length; $i++) { 
+		$randomString .= $characters[rand(0, strlen($characters) - 1)]; 
+	} 
+	return $randomString; 
 }
