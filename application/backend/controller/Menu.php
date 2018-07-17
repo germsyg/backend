@@ -9,6 +9,11 @@ class Menu extends Backend
 {
 	public $table = 'menu';
 
+    /**
+     * 后台管理菜单页
+     * @author XZJ @date 2018-07-17T19:52:53+0800
+     * @return [type] [description]
+     */
     public function index()
     {                    
         $menu = $this->selectBE($this->table, 'all');
@@ -37,7 +42,6 @@ class Menu extends Backend
         $menu = tree($menu);        
         $menu = sortTree($menu);
         $this->assign('menu', $menu);
-
         // $this->fetchSql = true;
         
         $info = $this->findBE($this->table, ['id'=>$id]);  
@@ -61,7 +65,7 @@ class Menu extends Backend
         $data['parent_id'] = input('post.parent_id');
     	$data['icon'] = input('post.icon');
     	$where = [];
-        // var_dump($data);die;
+        
     	if($id){
     		$data['modify_time'] = time();
     		$where = array('id'=>$id);
@@ -80,8 +84,7 @@ class Menu extends Backend
     }
 
     public function modify()
-    {
-        
+    {        
         $id = input('param.id');
         $data = Request::instance()->only(['status', 'sort']);
 

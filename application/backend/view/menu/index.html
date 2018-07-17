@@ -61,8 +61,8 @@
                 </td>
                 <td class="td-manage">
                     <button class="layui-btn layui-btn layui-btn-xs" onclick="x_admin_show('编辑','{:url('Menu/edit', ['id'=>$m.id])}')"><i class="layui-icon">&#xe642;</i>编辑</button>
-                    <button class="layui-btn layui-btn-warm layui-btn-xs" onclick="x_admin_show('编辑','{:url('Menu/add', ['id'=>$m.id])}')"><i class="layui-icon">&#xe642;</i>添加子栏目</button>
-                    <button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_del(this,'要删除的id')" href="javascript:;"><i class="layui-icon">&#xe640;</i>删除</button>
+                    <button class="layui-btn layui-btn-warm layui-btn-xs" onclick="x_admin_show('编辑','{:url('Menu/add', ['id'=>$m.id])}')"><i class="layui-icon">&#xe642;</i>添加子分类</button>
+                    <!-- <button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_del(this,'要删除的id')" href="javascript:;"><i class="layui-icon">&#xe640;</i>删除</button> -->
                 </td>
             </tr>
         {/volist}
@@ -73,8 +73,7 @@
 
 <script>
     $(function(){
-        $('.js-fold').click(function(){
-            alert(1&3);return
+        $('.js-fold').click(function(){            
             obj = $(this);
             var status = parseInt(obj.attr('fold'));
             if(status){
@@ -125,8 +124,7 @@
                         form.render('checkbox');                      
                     }
                 }
-            });  
-                   
+            });                     
 
         });  
     });

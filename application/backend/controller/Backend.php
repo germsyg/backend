@@ -7,6 +7,12 @@ use think\Session;
 header("Content-type: text/html; charset=utf-8");
 class Backend extends Controller
 {
+	public function _initialize()
+    {
+        if(!session::get('user')){
+			$this->redirect('Login/index');
+        }
+    }
 	// succcess 返回
     protected $suc = array('status'=>1, 'msg'=>'success', 'data'=>'');
     // failed 返回
@@ -72,28 +78,32 @@ class Backend extends Controller
 
     /**
      * 后台数据查询
-     * @author XZJ 2018-07-14T17:15:43+0800
-     * @param  [type]  $table   [description]
-     * @param  string  $field   [description]
-     * @param  string  $where   [description]
-     * @param  integer $page    [description]
-     * @param  integer $limit   [description]
-     * @param  boolean $isCount [description]
-     * @return [type]           [description]
+     * @author XZJ @date 2018-07-17T19:50:44+0800
+     * @param  [type] $table [description]
+     * @param  string $where [description]
+     * @param  string $field [description]
+     * @param  array  $other ['page'=>1, 'limit'=>50, 'order'=>array('key'=>'id', 'sort'=>desc)]
+     * other参数主要为，分页，与排序参数
+     * @return [type]        [description]
      */
-    protected function selectBE($table, $where='', $field='*', $page=1, $limit=50, $isCount=false)
+    protected function selectBE($table, $where='', $field='*', $other=[])    
     {
     	if(!$table){
     		return false;
-    	}
+    	}    	
     	$obj = db($table);
-    	if($isCount){
+    	if(isset($other['isCount'])){
     		$type = 'count';
     	}else{
     		$type = 'select';
-    		if($where != 'all' || $page == 0){  
+			$page = isset($other['page']) ? $other['page'] : 1;
+			$limit = isset($other['limit']) ? $other['limit'] : 50;
+    		if($where != 'all' || $page != 0){
     			// where为all时，放弃分页
     			$obj->page("{$page}, {$limit}");
+    		}
+    		if(isset($other['order'])){    			
+    			$obj->order($other['order']['key'], $other['order']['sort']);
     		}
     		$obj->field($field);
     	}
@@ -105,6 +115,14 @@ class Backend extends Controller
     	return $res;
     }
 
+    /**
+     * 一列数据
+     * @author XZJ @date 2018-07-17T19:50:28+0800
+     * @param  [type] $table [description]
+     * @param  string $where [description]
+     * @param  string $field [description]
+     * @return [type]        [description]
+     */
     public function findBE($table, $where='', $field='*')
     {
     	if(!$table){
