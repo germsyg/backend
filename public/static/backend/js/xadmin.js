@@ -145,6 +145,14 @@ $(function () {
         event.stopPropagation();
          
     })
+
+    // checkbox 的tip显示
+    $(document).on('mouseover','.layui-form-checkbox',function(){
+        $(this).closest('.tip-layer').find('.tip').show();
+    });
+    $(document).on('mouseout','.layui-form-checkbox',function(){
+        $(this).closest('.tip-layer').find('.tip').hide();
+    });
     
 })
 var cateIds = [];
@@ -196,5 +204,6 @@ function x_admin_close(){
     var index = parent.layer.getFrameIndex(window.name);
     parent.layer.close(index);
 }
+
 
 

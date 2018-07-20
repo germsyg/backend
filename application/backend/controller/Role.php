@@ -10,11 +10,7 @@ class Role extends Backend
 	public $table = 'role';
 
 
-    /**
-     * 后台管理菜单页
-     * @author XZJ @date 2018-07-17T19:52:53+0800
-     * @return [type] [description]
-     */
+
     public function index()
     {                    
         $info = $this->selectBE($this->table, 'all');
@@ -45,16 +41,21 @@ class Role extends Backend
         return $menu;
     }
 
-    public function handle()
+    public function save()
     {
     	// $id = input('post.id');
     	// $data['name'] = input('post.name');
     	$where = [];
         $data = input('post.');
+        foreach($data['auth'] as $k=>$v){
+            $res[$k] = array_keys($v);
+        }
+        
+        $data['auth'] = json_encode($res);
         
     	if($data['id']){
     		$data['modify_time'] = time();
-    		$where = array('id'=>$id);
+    		$where = array('id' => $data['id']);
     	}else{
     		$data['add_time'] = $data['modify_time'] = time();
     	}

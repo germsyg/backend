@@ -4,16 +4,32 @@
 <link rel="stylesheet" href="/static/backend/css/xadmin.css">
 {/block}
 {block name="content"}
+<style type="text/css">
+    .tip-layer{position: relative;}
+    .tip{
+        position: absolute;
+        z-index: 10;
+        top: -20px;
+        left: 25px;
+        background-color: #393D49;
+        color: #fff;
+        border-radius: 5px;
+        padding: 4px 5px;
+        display: none;    
+    }
+</style>
 <div class="x-body">
     <form class="layui-form">
-
-        {volist name="info" id="vo" key="k"}
+        {volist name="info.auth" id="vo" }
         <div class="layui-form-item">
-            <label class="layui-form-label"></label>
+            <label class="layui-form-label"><b>{$vo.class}：</b></label>
             <div class="layui-input-block">                
-                <input type="checkbox" name="like[write]" title="index" lay-skin="primary">
-                <input type="checkbox" name="like[write]" title="table confi" lay-skin="primary">
-                <input type="checkbox" name="like[write]" title="table confi" lay-skin="primary">            
+                {volist name="$vo.func" id="vo2"} 
+                <span  class="tip-layer">               
+                    <span class="tip">{$key}</span>                
+                    <input type="checkbox" name="auth[{$vo.class}][{$key}]" title="{$key}" lay-skin="primary" value="1" {if $vo2} checked="checked"{/if}>
+                </span>
+                {/volist}
             </div>
         </div>
         {/volist}
@@ -21,7 +37,7 @@
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label">
             </label>
-            <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('Role/handle', '', '')}">
+            <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('Role/save', '', '')}">
                 保存
             </button>
         </div>
@@ -29,6 +45,7 @@
 </div>
 
 <script>
+
 layui.use(['form','layer'], function(){
     $ = layui.jquery;
     var form = layui.form

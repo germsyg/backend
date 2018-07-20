@@ -10,28 +10,29 @@ class Auth extends Backend
 	public $table = 'auth';
 
 
-    /**
-     * 后台管理菜单页
-     * @author XZJ @date 2018-07-17T19:52:53+0800
-     * @return [type] [description]
-     */
     public function index()
     {                    
-        $info = $this->selectBE($this->table, 'all');
-
-        $this->assign('total', count($info));
-        $this->assign('info', $info);
+        
         return $this->fetch();
     }    
     
     public function roleAuth()
     {
+        $id = input('param.id');
         $auth = model('Auth')->getAuth();
-        foreach($auth as $k=>$v){
-            var_dump($k);
-        }
-        var_dump($auth);die;
-        $this->assign('info', $auth);
+        $role_auth = model('Role')->getRoleAuth($id);
+        // var_dump($role_auth);die;
+        foreach($auth as $ka=>&$va){
+            foreach($va['func'] as $k=>$v){
+                if(isset($role_auth[$va['class']]) && in_array($k, $role_auth[$va['class']])){
+                    $va['func'][$k] = 1;
+                }
+            }
+        }unset($va);
+        $info['auth'] = $auth;
+        $info['id'] = $id;
+// var_dump($auth);die;
+        $this->assign('info', $info);
         return $this->fetch('add');
     }
 
@@ -55,13 +56,13 @@ class Auth extends Backend
         return $menu;
     }
 
-    public function handle()
+    public function save()
     {
     	// $id = input('post.id');
     	// $data['name'] = input('post.name');
     	$where = [];
         $data = input('post.');
-        
+
     	if($data['id']){
     		$data['modify_time'] = time();
     		$where = array('id'=>$id);

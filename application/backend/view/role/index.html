@@ -33,23 +33,23 @@
                 <th width="220">操作</th>
         </thead>
         <tbody class="x-cate">
-            {volist name="info" id="i"}
+            {volist name="info" id="vo"}
             <tr>
                 <td>
                     <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
                 </td>
-                <input type="hidden" name="id" value="{$i.id}">
-                <td>{$i.id}</td>
-                <td>{$i.name}</td>                
-                <td>{$i.modify_time|date='Y-m-d H:i:s', ###}</td>
+                <input type="hidden" name="id" value="{$vo.id}">
+                <td>{$vo.id}</td>
+                <td>{$vo.name}</td>                
+                <td>{$vo.modify_time|date='Y-m-d H:i:s', ###}</td>
                 <td>
-                    <input type="checkbox" name="status" lay-text="正常|禁用" {if $i.status==1}checked{/if} lay-skin="switch" lay-filter="status" value="{$i.status}">
+                    <input type="checkbox" name="status" lay-text="正常|禁用" {if $vo.status==1}checked{/if} lay-skin="switch" lay-filter="status" value="{$vo.status}">
                 </td>
                 <td>
-                    <a title="编辑" onclick="x_admin_show('编辑','{:url('Role/edit', ['id'=>$i.id])}')" href="javascript:;">
+                    <a title="编辑" onclick="x_admin_show('编辑','{:url('Role/edit', ['id'=>$vo.id])}')" href="javascript:;">
                     <i class="iconfont">&#xe74e;</i>
                     </a>   &nbsp;
-                    <a title="角色权限" onclick="x_admin_show('编辑','{:url('Auth/roleAuth', ['id'=>$i.id])}')" href="javascript:;">
+                    <a title="角色权限" onclick="x_admin_show('编辑','{:url('Auth/roleAuth', ['id'=>$vo.id])}')" href="javascript:;">
                     <i class="iconfont">&#xe82b;</i>                    
                     </a>                       
                 </td>

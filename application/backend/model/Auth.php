@@ -31,12 +31,15 @@ class Auth extends Backend
             }
         } 
         // 对权限进行格式化
-        foreach($auth as $ka=>$va){
-        	$fun = array_diff($va, $parent_auth);
-        	foreach($fun as $kf=>$vf){
-        		$res[$ka][$vf] = 1;
+        foreach($auth as $ka=>&$va){
+        	$func = array_diff($va, $parent_auth);
+        	$d['class'] = $ka;
+        	foreach($func as $k=>$v){
+        		$d['func'][$v] = 0;
         	}
+        	$res[] = $d;
         }
+        // return $auth;
         return $res;
 	}
 
