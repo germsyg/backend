@@ -5,10 +5,9 @@ use think\Db;
 use think\Session;
 use think\Request;
 
-class Menu extends Backend
+class Role extends Backend
 {
-	public $table = 'menu';
-
+	public $table = 'role';
 
 
     /**
@@ -18,38 +17,23 @@ class Menu extends Backend
      */
     public function index()
     {                    
+        $info = $this->selectBE($this->table, 'all');
 
-        $menu = $this->selectBE($this->table, 'all');
-        $menu = tree($menu);        
-        $menu = sortTree($menu);        
-        $this->assign('total', count($menu));
-        $this->assign('menu', $menu);
+        $this->assign('total', count($info));
+        $this->assign('info', $info);
         return $this->fetch();
     }    
     
 
     public function add()
     {
-        $id = input('param.id');    	
-    	$menu = $this->selectBE($this->table, 'all');
-    	$menu = tree($menu);        
-        $menu = sortTree($menu);
-        $this->assign('menu', $menu);
-    	$this->assign('pid_selected', $id);
     	return $this->fetch();
     }
 
     public function edit()
     {
-        $id = input('param.id');
-        $menu = $this->selectBE($this->table, 'all');        
-        $menu = tree($menu);        
-        $menu = sortTree($menu);
-        $this->assign('menu', $menu);
-        // $this->fetchSql = true;
-        
-        $info = $this->findBE($this->table, ['id'=>$id]);  
-        // var_dump($info);      
+        $id = input('param.id');            
+        $info = $this->findBE($this->table, ['id'=>$id]);          
         $this->assign('info', $info);
         return $this->fetch('add');   
     }
@@ -63,19 +47,16 @@ class Menu extends Backend
 
     public function handle()
     {
-    	$id = input('post.id');
-    	$data['name'] = input('post.name');
-    	$data['url'] = input('post.url');
-        $data['parent_id'] = input('post.parent_id');
-    	$data['icon'] = input('post.icon');
+    	// $id = input('post.id');
+    	// $data['name'] = input('post.name');
     	$where = [];
+        $data = input('post.');
         
-    	if($id){
+    	if($data['id']){
     		$data['modify_time'] = time();
     		$where = array('id'=>$id);
     	}else{
     		$data['add_time'] = $data['modify_time'] = time();
-    		$data['add_admin'] = session::get('user.name');
     	}
     	
     	// $this->fetchSql = true;
