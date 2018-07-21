@@ -8,7 +8,7 @@ class Common extends Backend
     public function index()
     {
         // $r = Db::query('select * from admin');
-        // var_dump($r);
+        // var_dump($r); kj 
     	$this->assign('name','ThinkPHP');        
         return $this->fetch();
     }

@@ -149,7 +149,7 @@ class Backend extends Controller
      * @param  string $field [description]
      * @return [type]        [description]
      */
-    public function findBE($table, $where='', $field='*')
+    protected function findBE($table, $where='', $field='*')
     {
     	if(!$table){
     		return false;
