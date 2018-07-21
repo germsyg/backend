@@ -31,7 +31,7 @@ class Auth extends Backend
             }
         } 
         // 对权限进行格式化
-        foreach($auth as $ka=>&$va){
+        foreach($auth as $ka=>$va){
         	$func = array_diff($va, $parent_auth);
         	$d['class'] = $ka;
         	foreach($func as $k=>$v){
@@ -41,6 +41,21 @@ class Auth extends Backend
         }
         // return $auth;
         return $res;
+	}
+
+	public function getDbAuth()
+	{
+		$res = Auth::all();
+		if($res){
+			$res = collection($res)->toArray();
+			foreach($res as $k=>$v){
+				$r[$v['class']][$v['func']]['id'] = $v['id'];
+				$r[$v['class']][$v['func']]['name'] = $v['name'];
+			}
+			return $r;
+		}else{
+			return [];		
+		}
 	}
 
 }

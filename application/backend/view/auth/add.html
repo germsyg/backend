@@ -9,12 +9,13 @@
     .tip{
         position: absolute;
         z-index: 10;
-        top: -20px;
-        left: 25px;
+        top: -25px;
+        left: 10px;
         background-color: #393D49;
         color: #fff;
         border-radius: 5px;
         padding: 4px 5px;
+        white-space: nowrap;
         display: none;    
     }
 </style>
@@ -22,12 +23,12 @@
     <form class="layui-form">
         {volist name="info.auth" id="vo" }
         <div class="layui-form-item">
-            <label class="layui-form-label"><b>{$vo.class}：</b></label>
+            <label class="layui-form-label"><b>{$vo.name}：</b></label>
             <div class="layui-input-block">                
                 {volist name="$vo.func" id="vo2"} 
                 <span  class="tip-layer">               
-                    <span class="tip">{$key}</span>                
-                    <input type="checkbox" name="auth[{$vo.class}][{$key}]" title="{$key}" lay-skin="primary" value="1" {if $vo2} checked="checked"{/if}>
+                    <span class="tip">{$vo.class}->{$key}</span>                
+                    <input type="checkbox" name="auth[{$vo.class}][{$key}]" title="{$vo2.name}" lay-skin="primary" value="1" {if $vo2.checked} checked="checked"{/if}>
                 </span>
                 {/volist}
             </div>

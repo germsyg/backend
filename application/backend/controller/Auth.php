@@ -12,7 +12,21 @@ class Auth extends Backend
 
     public function index()
     {                    
-        
+        $auth = model('Auth')->getAuth();
+        $db_auth = model('Auth')->getDbAuth();
+        // var_dump($db_auth);
+        // var_dump($auth);die;
+        foreach($auth as $ka=>$va){
+
+            $d['class'] = $va['class'];
+            $d['name'] = isset($db_auth[$va['class']]['-']['name']) ? $db_auth[$va['class']]['-']['name'] : '';                
+            foreach($va['func'] as $k=>$v){
+                $d['func'][$k] = isset($db_auth[$va['class']][$k]['name']) ? $db_auth[$va['class']][$k]['name'] : '';
+            }
+            $info[] = $d;
+        }
+        // var_dump($info);die;
+        $this->assign('info', $info);
         return $this->fetch();
     }    
     
@@ -20,18 +34,30 @@ class Auth extends Backend
     {
         $id = input('param.id');
         $auth = model('Auth')->getAuth();
+        $db_auth = model('Auth')->getDbAuth();
         $role_auth = model('Role')->getRoleAuth($id);
-        // var_dump($role_auth);die;
+        // var_dump($db_auth);die;
         foreach($auth as $ka=>&$va){
+            $d['class'] = $va['class'];
+            $d['name'] = $va['class'];
+            if(isset($db_auth[$va['class']]['-'])){
+                $d['name'] = $db_auth[$va['class']]['-']['name'] ?: $va['class'];
+            }
             foreach($va['func'] as $k=>$v){
+                $d['func'][$k]['checked'] = 0;
                 if(isset($role_auth[$va['class']]) && in_array($k, $role_auth[$va['class']])){
-                    $va['func'][$k] = 1;
+                    $d['func'][$k]['checked'] = 1;
+                }
+                $d['func'][$k]['name'] = $k;
+                if(isset($db_auth[$va['class']][$k])){
+                    $d['func'][$k]['name'] = $db_auth[$va['class']][$k]['name'] ?: $k;
                 }
             }
+            $res[] = $d;
         }unset($va);
-        $info['auth'] = $auth;
+        $info['auth'] = $res;
         $info['id'] = $id;
-// var_dump($auth);die;
+// var_dump($info);die;
         $this->assign('info', $info);
         return $this->fetch('add');
     }
@@ -58,20 +84,30 @@ class Auth extends Backend
 
     public function save()
     {
-    	// $id = input('post.id');
-    	// $data['name'] = input('post.name');
     	$where = [];
         $data = input('post.');
+        $modAuth = model('Auth');
+        $db_auth = $modAuth->getDbAuth();
+        
+        foreach($data as $kd=>$vd){
+            foreach($vd as $k=>$v){
+                if(isset($db_auth[$kd][$k])){
+                    if($db_auth[$kd][$k]['name'] != $v){
+                        $modAuth->data(['id'=>$db_auth[$kd][$k]['id'], 'name'=>$v]);
+                        $res = $modAuth->save();
+                    }
+                }else{
+                    $d['class'] = $kd;
+                    $d['func'] = $k;
+                    $d['name'] = $v;
+                    $insert[] = $d;
+                }
+            }            
+        }
+        if($insert){
+            $res = $modAuth->saveAll($insert);
+        }
 
-    	if($data['id']){
-    		$data['modify_time'] = time();
-    		$where = array('id'=>$id);
-    	}else{
-    		$data['add_time'] = $data['modify_time'] = time();
-    	}
-    	
-    	// $this->fetchSql = true;
-    	$res = $this->editBE($this->table, $data, $where);
     	if($res){
             return $this->suc;
         }else{

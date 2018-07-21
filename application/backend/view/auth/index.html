@@ -12,227 +12,62 @@
     </a>
 </div>
 <div class="x-body layui-bg-gray">  
-    
+    {volist name="info" id="vo"}
     <div class="layui-card">
-        <div class="layui-card-header">
-            卡片面板
-            <div class="layui-input-inline">
-                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
+        <form class="layui-form">
+            <div class="layui-card-header">
+                {$vo.class}&nbsp;           
+                <div class="layui-input-inline">
+                    <input type="text" name="{$vo.class}[-]"  lay-verify="" autocomplete="off" class="layui-input" value="{$vo.name|default=''}">
+                </div>
+                <button class="layui-btn" lay-filter="add" lay-submit="">保存</button> 
             </div>
-            <button class="layui-btn">保存</button> 
-        </div>
-        <div class="layui-card-body">
-            <form class="layui-form">    
-                <div class="layui-row">        
+            <div class="layui-card-body">                    
+                <div class="layui-row">    
+                    {volist name="vo.func" id="f"}    
                     <div class="layui-col-md3">
                         <div class="layui-form-item">
                             <label for="name" class="layui-form-label">
-                                菜单名称
+                                {$key}
                             </label>
                             <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
+                                <input type="text"  name="{$vo.class}[{$key}]"  lay-verify="" autocomplete="off" class="layui-input" value="{$f|default=''}">
                             </div>                    
                         </div>
                     </div>                    
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="layui-card">
-        <div class="layui-card-header">
-            卡片面板
-            <div class="layui-input-inline">
-                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
+                    {/volist}
+                </div>            
             </div>
-            <button class="layui-btn">保存</button> 
-        </div>
-        <div class="layui-card-body">
-            <form class="layui-form">    
-                <div class="layui-row">        
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>                    
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                    <div class="layui-col-md3">
-                        <div class="layui-form-item">
-                            <label for="name" class="layui-form-label">
-                                菜单名称
-                            </label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-                            </div>                    
-                        </div>
-                    </div>   
-                </div>
-            </form>
-        </div>
+        </form>
     </div>
+    {/volist}
     
     
 </div>
 
 <script>
-    $(function(){
-        $('.js-fold').click(function(){            
-            obj = $(this);
-            var status = parseInt(obj.attr('fold'));
-            if(status){
-                $("tbody.x-cate tr").show();
-                $('.x-show').each(function(){
-                    $(this).html('&#xe625;'); 
-                    $(this).attr('status','false');
-                })                
-            }else{                
-                $("tbody.x-cate tr[fid!='0']").hide();
-                $('.x-show').each(function(){
-                    $(this).html('&#xe623;'); 
-                    $(this).attr('status','true');
-                })
-            }
-            obj.attr('fold', ~status+2);
-        })
-    })
+
     layui.use(['form'], function () {
         form = layui.form;
-        form.on('switch(status)', function(data){
-            // load层
-            var i= layer.load(2);
-            // 数据id
-            var id = $(this).closest('tr').find('input[name=id]').val();
-            var obj = $(data.elem);
-            // 当前按钮状态
-            var ori_status = data.value;
-            // 开关原状态
-            var ori_checked = !data.elem.checked;
-
-            var status = 1;            
-            if(ori_status == 1){
-                status = 0;
-            }       
+        form.on('submit(add)', function(data){       
+        
             $.ajax({
-                url: "{:url('Role/modify')}",
+                url: '{:url('Auth/save', '', '')}',
                 type: "post",
-                data: {id:id, status:status},
+                data: data.field,
                 success:function(res){
-                    layer.close(i); 
-                    if(res.status == 1){        
-                        obj.val(status);            
-                        layer.msg(res.msg);  
-                    }else{                 
-                        layer.msg(res.msg);  
-                        obj.prop('checked', ori_checked);                
-                        form.render('checkbox');                      
+                    if(res.status == 1){                    
+                        layer.alert("保存成功", {icon: 6},function () {                        
+                            // location.replace(location.href);
+                        });
+                    }else{
+                        layer.msg(res.msg);
                     }
                 }
-            });                     
-
-        });  
+            });
+            return false;
+        });
     });
-
-    
-
-    /*用户-删除*/
-    function member_del(obj, id) {
-        layer.confirm('确认要删除吗？', function (index) {
-            //发异步删除数据
-            $(obj).parents("tr").remove();
-            layer.msg('已删除!', {
-                icon: 1,
-                time: 1000
-            });
-        });
-    }
-
-
-
-    function delAll(argument) {
-
-        var data = tableCheck.getData();
-
-        layer.confirm('确认要删除吗？' + data, function (index) {
-            //捉到所有被选中的，发异步进行删除
-            layer.msg('删除成功', {
-                icon: 1
-            });
-            $(".layui-form-checked").not('.header').parents('tr').remove();
-        });
-    }
 </script>
 
 {/block}
