@@ -1,18 +1,11 @@
 <?php
 namespace app\backend\controller;
-use think\Controller;
 use think\Db;
 use think\Session;
 
 header("Content-type: text/html; charset=utf-8");
-class Backend extends Controller
-{
-	public function _initialize()
-    {        
-        if(!session::get('user') && request()->controller() != 'Login'){
-			$this->redirect('Login/index');
-        }
-    }
+class Backend extends Authorize
+{	
 	// succcess 返回
     protected $suc = array('status'=>1, 'msg'=>'success', 'data'=>'');
     // failed 返回

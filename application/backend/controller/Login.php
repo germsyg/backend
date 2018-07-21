@@ -8,6 +8,8 @@ class Login extends Backend
 {
     public function index()
     {                    
+        $r = model('Admin')->getAdminAuth();
+        
         if(session::get('user')){            
             $this->redirect('Index/index');
         }else{
