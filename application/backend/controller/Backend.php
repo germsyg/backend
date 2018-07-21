@@ -56,7 +56,7 @@ class Backend extends Controller
      * @param  [type] $data  [description]
      * @return [type]        [description]
      */
-    protected function editBE($table='', $data='', $where='')
+    protected function saveBE($table='', $data='', $where='')
     {
     	if(!$table){
     		return false;

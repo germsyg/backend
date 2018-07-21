@@ -39,30 +39,24 @@
                 <th>操作</th>
         </thead>
         <tbody>
-        {volist name="info" id="i"}
+        {volist name="info" id="vo"}
             <tr>
                 <td>
                     <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
                 </td>
-                <input type="hidden" name="id" value="{$i.id}">
-                <td>{$i.id}</td>
-                <td>{$i.name}</td>                
-                <td>{$i.email}</td>
-                <td>man</td>
-                <td>{$i.reg_time|date='Y-m-d H:i:s', ###}</td>
+                <input type="hidden" name="id" value="{$vo.id}">
+                <td>{$vo.id}</td>
+                <td>{$vo.name}</td>                
+                <td>{$vo.email}</td>
+                <td>{$vo.role}</td>
+                <td>{$vo.reg_time|date='Y-m-d H:i:s', ###}</td>
                 <td>
-                    <input type="checkbox" name="status" lay-text="正常|禁用" {if $i.status==1}checked{/if} lay-skin="switch" lay-filter="status" value="{$i.status}">
+                    <input type="checkbox" name="status" lay-text="正常|禁用" {if $vo.status==1}checked{/if} lay-skin="switch" lay-filter="status" value="{$vo.status}">
                 </td>
                 <td>
-                    <a onclick="member_stop(this,'10001')" href="javascript:;" title="启用">
-                    <i class="layui-icon">&#xe601;</i>
-                  </a>
-                        <a title="编辑" onclick="x_admin_show('编辑','admin-edit.html')" href="javascript:;">
-                    <i class="layui-icon">&#xe642;</i>
-                  </a>
-                        <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                    <i class="layui-icon">&#xe640;</i>
-                  </a>
+                    <a title="编辑" onclick="x_admin_show('编辑','{:url('Admin/edit', ['id'=>$vo.id])}')" href="javascript:;">
+                        <i class="layui-icon">&#xe642;</i>
+                    </a>                    
                 </td>
             </tr>
             {/volist}

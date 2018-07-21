@@ -7,9 +7,14 @@ use think\Request;
 
 class Role extends Backend
 {
-	public function getRoleAuth($id)
+
+	public function getRole()
 	{
-		
+		return collection(Role::column('*', 'id'))->toArray();
+	}	
+
+	public function getRoleAuth($id)
+	{		
 		return json_decode(Role::get($id)->auth, true);
 	}
 
