@@ -8,8 +8,8 @@ header("Content-type: text/html; charset=utf-8");
 class Backend extends Controller
 {
 	public function _initialize()
-    {
-        if(!session::get('user')){
+    {        
+        if(!session::get('user') && request()->controller() != 'Login'){
 			$this->redirect('Login/index');
         }
     }

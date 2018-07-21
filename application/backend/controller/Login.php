@@ -4,16 +4,15 @@ use think\Controller;
 use think\Db;
 use think\Session;
 
-class Login extends Controller
+class Login extends Backend
 {
     public function index()
-    {    
-    	if(session::get('user')){
-			$this->redirect('Index/index');
-    	}else{
+    {                    
+        if(session::get('user')){            
+            $this->redirect('Index/index');
+        }else{
         	return $this->fetch();
-    	}
-    	
+    	}    	
     }    
 
 
@@ -34,7 +33,7 @@ class Login extends Controller
     	if(!$info){
     		return $res;
     	}else{
-    		$match = $this->comparePwd($info['pwd'], $pwd);
+    		$match = action('Common/vertifyPwd', [$pwd, $info['pwd'], $info['salt']]);
     		if($match){
     			$this->login($info);
     			$res['status'] = 1;
