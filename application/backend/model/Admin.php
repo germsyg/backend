@@ -16,17 +16,25 @@ class Admin extends Backend
 	public function getAdminAuth($id='')
 	{
 		if(!$id){
-			$id = session('user.id');
-		}
-		$id = 2;
+			$id = session('admin.id');
+		}		
+		// 用户属于多个角色
 		$role = Admin::get($id)->role_ids;
 		$auth = model('Role')->where('id', 'in', $role)->column('auth');
+		$sum = array();
 		foreach($auth as $k){
-			$temp = json_decode($k, true);
-			var_dump($temp);
+			if(!empty($k)){
+				$temp = json_decode($k, true);
+				foreach($temp as $kt=>$vt){
+					if(isset($sum[$kt])){
+						$sum[$kt] = array_merge($sum[$kt], $vt);
+					}else{
+						$sum[$kt] = $vt;
+					}
+				}
+			}		
 		}
-		// var_dump($r);
-		
+		return $sum;		
 	}
 
 

@@ -7,10 +7,8 @@ use think\Session;
 class Login extends Backend
 {
     public function index()
-    {                    
-        $r = model('Admin')->getAdminAuth();
-        
-        if(session::get('user')){            
+    {                                    
+        if(session::get('admin')){            
             $this->redirect('Index/index');
         }else{
         	return $this->fetch();
@@ -85,12 +83,13 @@ class Login extends Backend
     private function login($info)
     {
     	// session 录入
-        Session::set('user.id', $info['id']);
-		Session::set('user.email', $info['email']);
-		Session::set('user.name', $info['name']);
-		Session::set('user.last_login_ip', $info['last_login_ip']);
-		Session::set('user.last_login_time', $info['last_login_time']);
-
+        Session::set('admin.id', $info['id']);
+		Session::set('admin.email', $info['email']);
+		Session::set('admin.name', $info['name']);
+		Session::set('admin.last_login_ip', $info['last_login_ip']);
+		Session::set('admin.last_login_time', $info['last_login_time']);
+        $auth = model('Admin')->getAdminAuth();
+        Session::set('admin.auth', $auth);
 		// 更新登陆信息
 		$update['last_login_ip'] = $_SERVER["REMOTE_ADDR"];;
 		$update['last_login_time'] = time();
@@ -104,7 +103,7 @@ class Login extends Backend
      */
     public function logout()
     {
-    	Session::delete('user');
+    	Session::delete('admin');
     	$this->redirect('Login/index');
     }
 

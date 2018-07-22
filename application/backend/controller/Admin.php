@@ -65,7 +65,7 @@ class Admin extends Backend
             $data['name'] = $input['name'];
             $data['email'] = $input['email'];
             if($input['pwd']){
-                $data['salt'] = randomString(6);        
+                $data['salt'] = $salt = randomString(6);        
                 $data['pwd'] = action('Common/generalPwd',[$input['pwd'], $salt]);        
             }
             if(!empty($input['role'])){
@@ -80,7 +80,7 @@ class Admin extends Backend
     	}
     	
     	// $this->fetchSql = true;
-    	$res = $this->saveBE($this->table, $data, $where);
+    	$res = $this->saveBE($this->table, $data, $where);        
     	if($res){
             return $this->suc;
         }else{

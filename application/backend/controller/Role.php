@@ -43,8 +43,6 @@ class Role extends Backend
 
     public function save()
     {
-    	// $id = input('post.id');
-    	// $data['name'] = input('post.name');
     	$where = [];
         $data = input('post.');
         foreach($data['auth'] as $k=>$v){
@@ -59,7 +57,6 @@ class Role extends Backend
     	}else{
     		$data['add_time'] = $data['modify_time'] = time();
     	}
-    	
     	// $this->fetchSql = true;
     	$res = $this->saveBE($this->table, $data, $where);
     	if($res){
