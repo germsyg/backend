@@ -1,18 +1,11 @@
 <?php
 namespace app\backend\controller;
-use think\Controller;
 use think\Db;
 use think\Session;
 
 header("Content-type: text/html; charset=utf-8");
-class Backend extends Controller
-{
-	public function _initialize()
-    {
-        if(!session::get('user')){
-			$this->redirect('Login/index');
-        }
-    }
+class Backend extends Authorize
+{	
 	// succcess 返回
     protected $suc = array('status'=>1, 'msg'=>'success', 'data'=>'');
     // failed 返回
@@ -56,7 +49,7 @@ class Backend extends Controller
      * @param  [type] $data  [description]
      * @return [type]        [description]
      */
-    protected function editBE($table='', $data='', $where='')
+    protected function saveBE($table='', $data='', $where='')
     {
     	if(!$table){
     		return false;
@@ -71,6 +64,9 @@ class Backend extends Controller
     	$res = $obj->fetchSql($this->fetchSql)->$type($data);
         if(!$this->fetchSql){
             $this->log($table, $data, $where);
+        }
+        if($this->fetchSql){            
+            var_dump($res);die;
         }
     	return $res !== false;
     }
@@ -97,7 +93,7 @@ class Backend extends Controller
         $insert['table'] = $table;
         $insert['data_id'] = (int)$data_id;
         $insert['content'] = json_encode($data);
-        $insert['admin_id'] = session::get('user.id');
+        $insert['admin_id'] = session::get('admin.id');
         $insert['add_time'] = time();
         db('backend_log')->insert($insert);
     }

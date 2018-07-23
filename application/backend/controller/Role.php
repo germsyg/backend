@@ -43,8 +43,6 @@ class Role extends Backend
 
     public function save()
     {
-    	// $id = input('post.id');
-    	// $data['name'] = input('post.name');
     	$where = [];
         $data = input('post.');
         foreach($data['auth'] as $k=>$v){
@@ -59,9 +57,8 @@ class Role extends Backend
     	}else{
     		$data['add_time'] = $data['modify_time'] = time();
     	}
-    	
     	// $this->fetchSql = true;
-    	$res = $this->editBE($this->table, $data, $where);
+    	$res = $this->saveBE($this->table, $data, $where);
     	if($res){
             return $this->suc;
         }else{
@@ -75,7 +72,7 @@ class Role extends Backend
         $data = Request::instance()->only(['status', 'sort']);
 
         $where['id'] = $id;        
-        $res = $this->editBE($this->table, $data, $where);
+        $res = $this->saveBE($this->table, $data, $where);
         
         if($res){
             return $this->suc;

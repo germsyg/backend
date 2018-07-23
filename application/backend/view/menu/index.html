@@ -112,13 +112,15 @@
             $.ajax({
                 url: "{:url('Menu/modify')}",
                 type: "post",
+                dataType: 'json',
                 data: {id:id, status:status},
                 success:function(res){
-                    layer.close(i); 
+                    console.log(res);
+                    layer.close(i);                                    
                     if(res.status == 1){        
                         obj.val(status);            
                         layer.msg(res.msg);  
-                    }else{                 
+                    }else{    
                         layer.msg(res.msg);  
                         obj.prop('checked', ori_checked);                
                         form.render('checkbox');                      

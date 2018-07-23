@@ -5,6 +5,7 @@ use think\Db;
 
 class Common extends Backend
 {
+    private $code = 'mvy#@$DFG^sdf0';
     public function index()
     {
         // $r = Db::query('select * from admin');
@@ -20,13 +21,12 @@ class Common extends Backend
     }
 
     public function generalPwd($pwd, $salt)
-    {
-        $code = 'mvy#@$DFG^sdf0';
-        return md5($pwd.$code.$salt);
+    {        
+        return md5($pwd.$this->code.$salt);
     }
 
-    public function vertifyPwd($pwd, $data_pwd, $salt)
+    public function vertifyPwd($input_pwd, $user_pwd, $salt)
     {
-
+        return md5($input_pwd.$this->code.$salt) === $user_pwd;
     }
 }

@@ -4,16 +4,15 @@ use think\Controller;
 use think\Db;
 use think\Session;
 
-class Login extends Controller
+class Login extends Backend
 {
     public function index()
-    {    
-    	if(session::get('user')){
-			$this->redirect('Index/index');
-    	}else{
+    {                                    
+        if(session::get('admin')){            
+            $this->redirect('Index/index');
+        }else{
         	return $this->fetch();
-    	}
-    	
+    	}    	
     }    
 
 
@@ -34,7 +33,7 @@ class Login extends Controller
     	if(!$info){
     		return $res;
     	}else{
-    		$match = $this->comparePwd($info['pwd'], $pwd);
+    		$match = action('Common/vertifyPwd', [$pwd, $info['pwd'], $info['salt']]);
     		if($match){
     			$this->login($info);
     			$res['status'] = 1;
@@ -84,12 +83,13 @@ class Login extends Controller
     private function login($info)
     {
     	// session 录入
-        Session::set('user.id', $info['id']);
-		Session::set('user.email', $info['email']);
-		Session::set('user.name', $info['name']);
-		Session::set('user.last_login_ip', $info['last_login_ip']);
-		Session::set('user.last_login_time', $info['last_login_time']);
-
+        Session::set('admin.id', $info['id']);
+		Session::set('admin.email', $info['email']);
+		Session::set('admin.name', $info['name']);
+		Session::set('admin.last_login_ip', $info['last_login_ip']);
+		Session::set('admin.last_login_time', $info['last_login_time']);
+        $auth = model('Admin')->getAdminAuth();
+        Session::set('admin.auth', $auth);
 		// 更新登陆信息
 		$update['last_login_ip'] = $_SERVER["REMOTE_ADDR"];;
 		$update['last_login_time'] = time();
@@ -103,7 +103,7 @@ class Login extends Controller
      */
     public function logout()
     {
-    	Session::delete('user');
+    	Session::delete('admin');
     	$this->redirect('Login/index');
     }
 

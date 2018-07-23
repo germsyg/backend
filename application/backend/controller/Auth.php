@@ -121,7 +121,7 @@ class Auth extends Backend
         $data = Request::instance()->only(['status', 'sort']);
 
         $where['id'] = $id;        
-        $res = $this->editBE($this->table, $data, $where);
+        $res = $this->saveBE($this->table, $data, $where);
         
         if($res){
             return $this->suc;
