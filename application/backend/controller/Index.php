@@ -11,8 +11,7 @@ class Index extends Backend
 	 * @return [type] [description]
 	 */
     public function index()
-    {            
-        
+    {                    
     	$menu = $this->selectBE('menu', ['status'=> 1], '*', ['page'=>0]);
     	$menu = tree($menu);        
         $this->assign('menu', $menu);

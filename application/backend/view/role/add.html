@@ -6,46 +6,73 @@
 {block name="content"}
 <div class="x-body">
     <form class="layui-form">
-        <div class="layui-form-item">
-            <label for="name" class="layui-form-label">
-                <span class="x-red">*</span>角色名
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.name|default=''}">
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                <span class="x-red">*</span>
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基础信息</li>
+                <li>角色权限</li>                
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form-item">
+                        <label for="name" class="layui-form-label">
+                            <span class="x-red">*</span>角色名
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input" value="{$info.role.name|default=''}">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="tag" class="layui-form-label">
+                            <span class="x-red">*</span>角色标识
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="tag" name="tag" required="" lay-verify="" autocomplete="off" class="layui-input" value="{$info.role.tag|default=''}">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*（英文唯一标识）</span>
+                        </div>
+                    </div>        
+                    <div class="layui-form-item">
+                        <label for="desc" class="layui-form-label">
+                            <span class="x-red"></span>角色描述
+                        </label>
+                        <div class="layui-input-inline">
+                            <textarea name="desc" required lay-verify="required" placeholder="请输入" class="layui-textarea">{$info.role.desc|default=''}</textarea>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red"></span>
+                        </div>
+                    </div>    
+                </div>
+                <div class="layui-tab-item">
+                    {volist name="info.auth" id="vo" }
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><b>{$vo.name}：</b></label>
+                        <div class="layui-input-block">                
+                            {volist name="$vo.func" id="vo2"} 
+                            <span  class="tip-layer">               
+                                <span class="tip">{$vo.class}->{$key}</span>                
+                                <input type="checkbox" name="auth[{$vo.class}][{$key}]" title="{$vo2.name}" lay-skin="primary" value="1" {if $vo2.checked} checked="checked"{/if}>
+                            </span>
+                            {/volist}
+                        </div>
+                    </div>
+                    {/volist}
+                </div>                
             </div>
         </div>
-        <div class="layui-form-item">
-            <label for="tag" class="layui-form-label">
-                <span class="x-red">*</span>角色标识
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" id="tag" name="tag" required="" lay-verify="" autocomplete="off" class="layui-input" value="{$info.tag|default=''}">
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                <span class="x-red">*（英文唯一标识）</span>
-            </div>
-        </div>        
-        <div class="layui-form-item">
-            <label for="desc" class="layui-form-label">
-                <span class="x-red"></span>角色描述
-            </label>
-            <div class="layui-input-inline">
-                <textarea name="desc" required lay-verify="required" placeholder="请输入" class="layui-textarea">{$info.desc|default=''}</textarea>
-            </div>
-            <div class="layui-form-mid layui-word-aux">
-                <span class="x-red"></span>
-            </div>
-        </div>    
+
+        
         
 
-        <input name="id" type="hidden" value="{$info.id|default=''}">
+        <input name="id" type="hidden" value="{$info.role.id|default=''}">
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label">
             </label>
-            <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('Role/handle', '', '')}">
+            <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('Role/save', '', '')}">
                 保存
             </button>
         </div>

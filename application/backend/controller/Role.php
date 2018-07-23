@@ -14,7 +14,6 @@ class Role extends Backend
     public function index()
     {                    
         $info = $this->selectBE($this->table, 'all');
-
         $this->assign('total', count($info));
         $this->assign('info', $info);
         return $this->fetch();
@@ -23,37 +22,41 @@ class Role extends Backend
 
     public function add()
     {
+        $info['auth'] = model('Role')->getFormatAuth();        
+        $this->assign('info', $info);
     	return $this->fetch();
     }
 
     public function edit()
     {
-        $id = input('param.id');            
-        $info = $this->findBE($this->table, ['id'=>$id]);          
+        $id = input('param.id');          
+        $info['auth'] = model('Role')->getFormatAuth($id);  
+        $info['role'] = $this->findBE($this->table, ['id'=>$id]);          
         $this->assign('info', $info);
         return $this->fetch('add');   
     }
 
-    public function getMenu()
-    {
-        $id = input('param.id');
-        $menu = $this->selectBE($this->table, ['parent_id'=>$id], 'id, name');        
-        return $menu;
-    }
 
     public function save()
     {
     	$where = [];
-        $data = input('post.');
-        foreach($data['auth'] as $k=>$v){
-            $res[$k] = array_keys($v);
+        $input = input('post.');
+
+        foreach($input as $k=>$v){
+            if($k == 'id'){continue;}
+            if($k == 'auth'){
+                foreach($input['auth'] as $k=>$v){
+                    $res[$k] = array_keys($v);
+                }            
+                $data['auth'] = json_encode($res); 
+            }else{
+                $data[$k] = $v;
+            }
         }
         
-        $data['auth'] = json_encode($res);
-        
-    	if($data['id']){
+    	if($input['id']){            
     		$data['modify_time'] = time();
-    		$where = array('id' => $data['id']);
+    		$where = array('id' => $input['id']);
     	}else{
     		$data['add_time'] = $data['modify_time'] = time();
     	}
@@ -65,22 +68,5 @@ class Role extends Backend
             return $this->fai;
         }
     }
-
-    public function modify()
-    {        
-        $id = input('param.id');
-        $data = Request::instance()->only(['status', 'sort']);
-
-        $where['id'] = $id;        
-        $res = $this->saveBE($this->table, $data, $where);
-        
-        if($res){
-            return $this->suc;
-        }else{
-            $this->fai['msg'] = '更新失败，稍后再试';
-            return $this->fai;
-        }
-    }
-
 
 }

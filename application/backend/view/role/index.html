@@ -47,11 +47,8 @@
                 </td>
                 <td>
                     <a title="编辑" onclick="x_admin_show('编辑','{:url('Role/edit', ['id'=>$vo.id])}')" href="javascript:;">
-                    <i class="iconfont">&#xe74e;</i>
-                    </a>   &nbsp;
-                    <a title="角色权限" onclick="x_admin_show('编辑','{:url('Auth/roleAuth', ['id'=>$vo.id])}')" href="javascript:;">
-                    <i class="iconfont">&#xe82b;</i>                    
-                    </a>                       
+                        <i class="iconfont">&#xe74e;</i>
+                    </a>
                 </td>
             </tr>
             {/volist}
@@ -98,7 +95,7 @@
                 status = 0;
             }       
             $.ajax({
-                url: "{:url('Role/modify')}",
+                url: "{:url('Role/save')}",
                 type: "post",
                 data: {id:id, status:status},
                 success:function(res){
