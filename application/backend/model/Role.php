@@ -38,6 +38,7 @@ class Role extends Backend
             if(isset($db_auth[$va['class']]['-'])){
                 $d['name'] = $db_auth[$va['class']]['-']['name'] ?: $va['class'];
             }
+            $d['func'] = array();
             foreach($va['func'] as $k=>$v){
                 $d['func'][$k]['checked'] = 0;
                 if(isset($role_auth[$va['class']]) && in_array($k, $role_auth[$va['class']])){

@@ -11,8 +11,8 @@ class Auth extends Backend
 	{
 		// 父类方法
 		$parent_class = 'Backend';
-		// 排除公共类
-		$remove_class = array('Login','Common');
+		// 排除类
+		$remove_class = array('Login','Common', 'Authorize');
 		$dir = dirname(__DIR__).DS.'controller';
 		$files = scandir($dir); 
 		foreach ($files as $file) {					
@@ -29,11 +29,12 @@ class Auth extends Backend
 					$auth[$class] = get_class_methods('\\app\\backend\\controller\\'.$class);	
 				}            	
             }
-        } 
+        }         
         // 对权限进行格式化
         foreach($auth as $ka=>$va){
         	$func = array_diff($va, $parent_auth);
-        	$d['class'] = $ka;
+        	$d['class'] = $ka;        	
+        	$d['func'] = array();
         	foreach($func as $k=>$v){
         		$d['func'][$v] = 0;
         	}
