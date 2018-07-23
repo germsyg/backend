@@ -17,6 +17,7 @@ class Auth extends Backend
         foreach($auth as $ka=>$va){
             $d['class'] = $va['class'];
             $d['name'] = isset($db_auth[$va['class']]['-']['name']) ? $db_auth[$va['class']]['-']['name'] : '';                
+            $d['func'] = array();
             foreach($va['func'] as $k=>$v){
                 $d['func'][$k] = isset($db_auth[$va['class']][$k]['name']) ? $db_auth[$va['class']][$k]['name'] : '';
             }
