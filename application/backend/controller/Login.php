@@ -58,21 +58,6 @@ class Login extends Backend
     	return $res;
     }
 
-    /**
-     * 对比密码
-     * @author XZJ 2018-07-14T10:33:49+0800
-     * @param  [type] $data  [description]
-     * @param  [type] $input [description]
-     * @return [type]        [description]
-     */
-    private function comparePwd($data, $input)
-    {    	
-    	$res = false;
-    	if(md5($input) == $data){
-    		$res = true;
-    	}
-    	return $res;
-    }
 
     /**
      * 登陆后session等信息操作

@@ -8,8 +8,6 @@ class Common extends Backend
     private $code = 'mvy#@$DFG^sdf0';
     public function index()
     {
-        // $r = Db::query('select * from admin');
-        // var_dump($r); kj 
     	$this->assign('name','ThinkPHP');        
         return $this->fetch();
     }
