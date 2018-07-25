@@ -69,53 +69,45 @@
         laydate.render({
           elem: '#end' 
         });
-        laypage.render({
-            elem: 'page',
-            limit: {$info.limit},
-            count: {$info.count},
-            layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
-            jump: function(obj, first) {     
-                console.log(search_data);           
-                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-                console.log(obj.limit); //得到每页显示的条数
-                //首次不执行
-                if (!first) {
-                    alert(1)
-                }
-            }
-        });
+
+        initPage({$info.count}, {$info.limit});
         $('.search_btn').click(function(){
-            var data = $('#search_form').serialize();
-            console.log(data); 
+            var data = $('#search_form').serialize();            
             $.ajax({
                 url: "",
-                type: "post",                
-                data: {page:obj.curr, limit:obj.limit},
+                type: "post",
+                dataType: 'json',                
+                data: data,
                 success:function(res){
-                    $('#tr').html(res.html);
-                    laypage.render({
-                        elem: 'page',
-                        limit: res.limit,
-                        count: res.count,
-                        layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],                
-                    });
+                    $('#tr').html(res.data.html);
+                    initPage(res.data.count, res.data.limit)                    
                 }
             });              
         })
 
-        // laypage.render({
-        //     elem: 'page',     
-        //     layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],       
-        //     jump: function(obj, first) {     
-        //         console.log(search_data);           
-        //         console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-        //         console.log(obj.limit); //得到每页显示的条数
-        //         //首次不执行
-        //         if (!first) {
-        //             //do something
-        //         }
-        //     }
-        // });
+        // 初始化分页
+        function initPage(count, limit){
+            var data = $('#search_form').serialize();
+            laypage.render({
+                elem: 'page',
+                count: count,
+                limit: limit,
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                jump: function(obj, first) {                   
+                    if (!first) {
+                        $.ajax({
+                            url: "",
+                            type: "post",
+                            dataType: 'json',                
+                            data: data+'&page='+obj.curr+'&limit='+obj.limit,
+                            success:function(res){
+                                $('#tr').html(res.data.html);
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
         
         form.on('switch(status)', function(data){

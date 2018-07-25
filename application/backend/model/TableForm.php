@@ -64,7 +64,8 @@ class TableForm extends Backend
 		$field = $this->parseField();			
 		$where = $this->parseWhere();	
 
-		$list = $db->field($field)->where($where)->page($page, $limit)->select();						
+		$list = $db->field($field)->where($where)->fetchSql(false)->page($page, $limit)->select();						
+		
 		if($this->callback){			
 			$list = call_user_func_array(array($this->callback['class'], $this->callback['func']), array($list));			
 		}		
@@ -73,15 +74,19 @@ class TableForm extends Backend
 		$info['count'] = $db->where($where)->count();				
 		$info['limit'] = $limit;				
 		$info['list'] = $list;	
+
 		if(request()->isAjax()){					
 			$view = view('table_form/tr');		
 			$view->assign('info', $info);			
-			$content = $view->getContent();			
-			$res['status'] = 1;
+			$html = $view->getContent();			
+			$res['status'] = 1;			
+			$res['msg'] = 'success';			
+			$res['data']['html'] = $html;
 			$res['data']['count'] = $info['count'];
 			$res['data']['limit'] = $info['limit'];
+			echo json_encode($res);die;
 		}else{
-			$view = view('table_form/table');		
+			$view = view('table_form/table');					
 			$view->assign('info', $info);
 			$view->send();
 		}
@@ -93,7 +98,8 @@ class TableForm extends Backend
 		$input = input('post.');
 		$where = array();
 		if(isset($input['name'])){
-			$where['name'] = $input['name'];
+			// $where['name'] = array('like', $input['name'].'%');
+			$where['name'] = array('like', 'ran%');
 		}
 		return $where;
 	}
