@@ -5,8 +5,35 @@ use think\Db;
 use think\Session;
 use think\Request;
 
-class Admin extends Backend
+class Admin extends TableForm
 {
+
+	public function index()
+	{
+		$this->setTable('admin');
+		$this->setTableFieldFile('admin.php');
+		$this->setCallback($this, 'format');
+		parent::table();
+	}
+
+	public function format($res)
+	{		
+		$role = model('Role')->getRole();
+		// var_dump($role);
+		foreach($res as $k=>&$v){
+			$r = explode(',', $v['role_ids']);
+			$v['role_ids'] = '';
+			foreach($r as $k){
+				$v['role_ids'] .= $role[$k]['name'] . ', ';
+			}
+			$v['status'] = $this->buildSwitch('正常|禁用',  $v['status'], $v['status']?:0 );		
+			$v['operate'] = $this->buildBtn('编辑', url('Admin/edit', ['id'=>$v['id']]));
+		}unset($v);		
+		// var_dump($res);die;
+		return $res;
+	}
+
+
 
 	public function getAdmin($id)
 	{

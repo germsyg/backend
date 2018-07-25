@@ -9,6 +9,13 @@ class Admin extends Backend
 {
 	public $table = 'admin';
 
+    public function index2()
+    {
+        // view('index2',['a'=>1]);die;
+        // var_dump($this->fetch());die;
+        model($this->table)->index();
+    }
+
     public function index()
     {                	
     	$info = $this->lists($this->table);
@@ -59,27 +66,25 @@ class Admin extends Backend
     {
     	$input = input('post.');            		      
     	$where = [];
+        foreach($input as $k=>$v){
+            if($k == 'id'){continue;}
+            if($k == 'pwd'){
+                $data['salt'] = $salt = randomString(6);        
+                $data['pwd'] = action('Common/generalPwd',[$v, $salt]);        
+            }else if($k == 'role'){
+                $data['role_ids'] = implode(',', array_keys($input['role']));
+            }else{
+                $data[$k] = $v;            
+            }
+        }
         // var_dump($input['role']);
     	if($input['id']){    		
-    		$where = array('id'=>$input['id']);            
-            $data['name'] = $input['name'];
-            $data['email'] = $input['email'];
-            if($input['pwd']){
-                $data['salt'] = $salt = randomString(6);        
-                $data['pwd'] = action('Common/generalPwd',[$input['pwd'], $salt]);        
-            }
-            if(!empty($input['role'])){
-                $data['role_ids'] = implode(',', array_keys($input['role']));
-            } 
-            // var_dump($data);die;           
+    		$where = array('id'=>$input['id']);                                
     	}else{
-    		$data['salt'] = $salt = randomString(6);
-            $data['pwd'] = action('Common/generalPwd',[$input['pwd'], $salt]);
     		$data['reg_time'] = time();
     		$data['reg_ip'] = $_SERVER['REMOTE_ADDR'];
     	}
-    	
-    	// $this->fetchSql = true;
+
     	$res = $this->saveBE($this->table, $data, $where);        
     	if($res){
             return $this->suc;
