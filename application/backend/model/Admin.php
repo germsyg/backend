@@ -18,8 +18,7 @@ class Admin extends TableForm
 
 	public function format($res)
 	{		
-		$role = model('Role')->getRole();
-		// var_dump($role);
+		$role = model('Role')->getRole();		
 		foreach($res as $k=>&$v){
 			$r = explode(',', $v['role_ids']);
 			$v['role_ids'] = '';
@@ -27,6 +26,7 @@ class Admin extends TableForm
 				$v['role_ids'] .= $role[$k]['name'] . ', ';
 			}
 			$v['status'] = $this->buildSwitch('正常|禁用',  $v['status'], $v['status']?:0 );		
+			$v['reg_time'] = date('Y-m-d H:i:s', $v['reg_time']);
 			$v['operate'] = $this->buildBtn('编辑', url('Admin/edit', ['id'=>$v['id']]));
 		}unset($v);		
 		// var_dump($res);die;

@@ -57,24 +57,45 @@ class TableForm extends Backend
 	 */
 	protected function table()
 	{
-		$db = db($this->table);
+		$page = input('post.page', 1);
+		$limit = input('post.limit', 10);
 
-		$field = $this->parseField();	
-		// var_dump($field);die;
-		$list = $db->field($field)->select();		
-		
+		$db = db($this->table);
+		$field = $this->parseField();			
+		$where = $this->parseWhere();	
+
+		$list = $db->field($field)->where($where)->page($page, $limit)->select();						
 		if($this->callback){			
 			$list = call_user_func_array(array($this->callback['class'], $this->callback['func']), array($list));			
+		}		
+		
+		$info['config'] = $this->loadFieldFile();			
+		$info['count'] = $db->where($where)->count();				
+		$info['limit'] = $limit;				
+		$info['list'] = $list;	
+		if(request()->isAjax()){					
+			$view = view('table_form/tr');		
+			$view->assign('info', $info);			
+			$content = $view->getContent();			
+			$res['status'] = 1;
+			$res['data']['count'] = $info['count'];
+			$res['data']['limit'] = $info['limit'];
+		}else{
+			$view = view('table_form/table');		
+			$view->assign('info', $info);
+			$view->send();
 		}
-		$info['config'] = $this->loadFieldFile();
-		$info['list'] = $list;		
-		// var_dump($info);die;
+			
+	}
 
-
-
-		$view = view('table_form/table');		
-		$view->assign('info', $info);
-		$view->send();		
+	protected function parseWhere()
+	{
+		$input = input('post.');
+		$where = array();
+		if(isset($input['name'])){
+			$where['name'] = $input['name'];
+		}
+		return $where;
 	}
 
 	protected function loadFieldFile()

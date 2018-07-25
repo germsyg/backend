@@ -13,7 +13,7 @@ return [
     array(
         'title' => '序号',
         'field' => 'id',
-        'type' => 'key',
+        'is_key' => true,
         // 'alias' => 'a',        
     ),
     array(

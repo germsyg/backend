@@ -12,23 +12,23 @@
 </div>
 <div class="x-body">
     <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
+        <form class="layui-form  x-so" id="search_form">
             <input class="layui-input" placeholder="开始日" name="start" id="start">
             <input class="layui-input" placeholder="截止日" name="end" id="end">
-            <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
-            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+            <input type="text" name="name" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            <span class="layui-btn search_btn" ><i class="layui-icon">&#xe615;</i></span>
         </form>
     </div>
     <xblock>
         <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button> -->
         <button class="layui-btn" onclick="x_admin_show('添加用户','{:url('Admin/add')}')"><i class="layui-icon"></i>添加</button>
-        <span class="x-right" style="line-height:40px">共有数据：8 条</span>
+        <span class="x-right" style="line-height:40px">共有数据：{$info.count} 条</span>
     </xblock>
     <table class="layui-table layui-form">
         <thead>
             <tr>
             {volist name="info.config" id="vo"}
-                {if isset($vo.type) && $vo.type=='key'}
+                {if isset($vo.is_key) && $vo.is_key}
                 <th>
                     <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
                 </th>                        
@@ -36,11 +36,11 @@
                 <th>{$vo.title}</th>
                 {/volist}                
         </thead>
-        <tbody>
+        <tbody id="tr" lay-filter="tr">
             {volist name="info.list" id="vo"}
             <tr>
                 {volist name="info.config" id="c"}
-                {if isset($c.type) && $c.type=='key'}
+                {if isset($c.is_key) && $c.is_key}
                 <td>
                     <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$vo[$c.field]}'><i class="layui-icon">&#xe605;</i></div>
                 </td>
@@ -52,21 +52,72 @@
             {/volist}
         </tbody>
     </table>
-    <div class="page">
-        <div>
-            <a class="prev" href="">&lt;&lt;</a>
-            <a class="num" href="">1</a>
-            <span class="current">2</span>
-            <a class="num" href="">3</a>
-            <a class="num" href="">489</a>
-            <a class="next" href="">&gt;&gt;</a>
-        </div>
-    </div>
-
+    <div id="page" style="text-align: center;"></div>
 </div>
 <script>
-    layui.use(['form'], function () {
-        form = layui.form;
+    var search_data;
+    layui.use(['form','laypage', 'layer', 'laydate'], function () {
+        var laypage = layui.laypage,
+        layer = layui.layer,
+        form = layui.form
+        laydate = layui.laydate;
+                
+        laydate.render({
+          elem: '#start' 
+        });
+        
+        laydate.render({
+          elem: '#end' 
+        });
+        laypage.render({
+            elem: 'page',
+            limit: {$info.limit},
+            count: {$info.count},
+            layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+            jump: function(obj, first) {     
+                console.log(search_data);           
+                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                console.log(obj.limit); //得到每页显示的条数
+                //首次不执行
+                if (!first) {
+                    alert(1)
+                }
+            }
+        });
+        $('.search_btn').click(function(){
+            var data = $('#search_form').serialize();
+            console.log(data); 
+            $.ajax({
+                url: "",
+                type: "post",                
+                data: {page:obj.curr, limit:obj.limit},
+                success:function(res){
+                    $('#tr').html(res.html);
+                    laypage.render({
+                        elem: 'page',
+                        limit: res.limit,
+                        count: res.count,
+                        layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],                
+                    });
+                }
+            });              
+        })
+
+        // laypage.render({
+        //     elem: 'page',     
+        //     layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],       
+        //     jump: function(obj, first) {     
+        //         console.log(search_data);           
+        //         console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+        //         console.log(obj.limit); //得到每页显示的条数
+        //         //首次不执行
+        //         if (!first) {
+        //             //do something
+        //         }
+        //     }
+        // });
+
+        
         form.on('switch(status)', function(data){
             // load层
             var i= layer.load(2);
