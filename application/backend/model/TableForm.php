@@ -13,11 +13,18 @@ class TableForm extends Backend
 	// 查询数据表字段文件
 	protected $table_field_file = '';
 
-	// 回调方法
-	protected $callback = '';
+	protected $table_config;
+
+	// 列表数据回调方法
+	protected $list_callback = array();
+
+	// 搜索数据where回调
+	protected $search_callback = array();
 
 	// 查询筛选
 	protected $filter = '';
+
+
 
 	/**
 	 * 设置查询的主表
@@ -39,15 +46,26 @@ class TableForm extends Backend
 		$this->table_field_file = $file;
 	}
 
+	protected function setTableConfig($config)
+	{
+		$this->table_config = $config;
+	}
+
 	/**
 	 * 回调，用于二次处理查询出来的数据
 	 * @author XZJ 2018-07-25T09:47:56+0800
 	 * @param  [type] $callback [description]
 	 */
-	protected function setCallback($class, $func)
+	protected function setListCallback($class, $func)
 	{
-		$this->callback['class'] = $class;
-		$this->callback['func'] = $func;
+		$this->list_callback['class'] = $class;
+		$this->list_callback['func'] = $func;
+	}
+
+	protected function setSearchCallback($class, $func)
+	{
+		$this->search_callback['class'] = $class;
+		$this->search_callback['func'] = $func;	
 	}
 
 	/**
@@ -59,6 +77,7 @@ class TableForm extends Backend
 	{
 		$page = input('post.page', 1);
 		$limit = input('post.limit', 10);
+		$this->loadFieldFile();
 
 		$db = db($this->table);
 		$field = $this->parseField();			
@@ -66,11 +85,12 @@ class TableForm extends Backend
 
 		$list = $db->field($field)->where($where)->fetchSql(false)->page($page, $limit)->select();						
 		
-		if($this->callback){			
-			$list = call_user_func_array(array($this->callback['class'], $this->callback['func']), array($list));			
+		if($this->list_callback){				
+			$list = call_user_func_array(array($this->list_callback['class'], $this->list_callback['func']), array($list));
 		}		
 		
-		$info['config'] = $this->loadFieldFile();			
+		$info['config'] = $this->parseConfig();
+		$info['search'] = $this->parseSearch();
 		$info['count'] = $db->where($where)->count();				
 		$info['limit'] = $limit;				
 		$info['list'] = $list;	
@@ -93,36 +113,79 @@ class TableForm extends Backend
 			
 	}
 
+	protected function parseConfig()
+	{
+		$config = $this->table_config;
+		foreach($config as $k=>$v){
+			if(isset($v['is_show']) && !$v['is_show']){
+				unset($config[$k]);
+			}
+		}
+		return $config;
+	}
+
+	protected function parseSearch()
+	{
+		$config = $this->table_config;
+		// var_dump($config);die;
+		$search = array();
+
+		$text = function($conf){
+			return [];		
+		};
+
+		$date = function($conf){
+			$js_id[] = $start['field'] = $conf['field'].'_start';
+			$js_id[] = $end['field'] = $conf['field'].'_end';
+
+			return array('start'=>$start, 'end'=>$end, 'js_id'=>$js_id);
+		};
+
+		foreach($config as $k=>$v){
+			$data = array();
+			if(isset($v['is_search'])){
+				$data['field'] = $v['field'];
+				if(isset($conf['is_search']['field'])){
+					$data['field'] = $conf['is_search']['field'];
+				}	
+				$data['title'] = $v['title'];
+				$data['type'] = $v['is_search']['type'];
+
+				$data = array_merge($data, ${$v['is_search']['type']}($v));							
+				$search[] = $data;
+			}
+		}
+// var_dump($search);die;
+		return $search;
+	}
+
 	protected function parseWhere()
 	{
 		$input = input('post.');
 		$where = array();
-		if(isset($input['name'])){
-			// $where['name'] = array('like', $input['name'].'%');
-			$where['name'] = array('like', 'ran%');
-		}
+		$config = $this->table_config;
+
 		return $where;
 	}
 
 	protected function loadFieldFile()
 	{
-		// 路径在与model同级的field文件夹下
-		static $config;
+		// 路径在与model同级的field文件夹下		
 		if(empty($config)){
 			$path = dirname(__DIR__);
 			$file = $path . DS . 'field' . DS . $this->table_field_file;		
 			$config = '';
 			if(is_file($file)){
 				$config = require_once $file;
+				
 			}
 		}
-		
-		return $config;
+		$this->setTableConfig($config);		
 	}
 
 	protected function parseField()
 	{
-		$config = $this->loadFieldFile();
+		$config = $this->table_config;		
 		$str = '';
 		foreach($config as $k=>$v){
 			if(isset($v['is_sql']) && !$v['is_sql']){

@@ -13,9 +13,23 @@
 <div class="x-body">
     <div class="layui-row">
         <form class="layui-form  x-so" id="search_form">
-            <input class="layui-input" placeholder="开始日" name="start" id="start">
-            <input class="layui-input" placeholder="截止日" name="end" id="end">
+            {volist name="info.search" id="vo"}
+                {switch name="vo.type"}
+                    {case value='text'}
+                        <input type="text" name="{$vo.field}" placeholder="{$vo.title}" autocomplete="off" class="layui-input">
+                    {/case}
+                    {case value='date'}
+                        <input class="layui-input search_date" placeholder="开始日" name="start" id="{$vo.start.field}">
+                        <input class="layui-input search_date" placeholder="截止日" name="end" id="{$vo.start.field}">
+                    {/case}
+                {/switch}
+            {/volist}
+            <!-- <input class="layui-input " placeholder="开始日" name="start" id="start">
+            <input class="layui-input " placeholder="截止日" name="end" id="end">
+
             <input type="text" name="name" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+ -->
+
             <span class="layui-btn search_btn" ><i class="layui-icon">&#xe615;</i></span>
         </form>
     </div>
@@ -62,15 +76,26 @@
         form = layui.form
         laydate = layui.laydate;
                 
-        laydate.render({
-          elem: '#start' 
-        });
         
-        laydate.render({
-          elem: '#end' 
-        });
-
-        initPage({$info.count}, {$info.limit});
+        // laydate.render({
+        //   elem: '#' 
+        // });
+        initPage();        
+        function initPage(){
+            // 初始化法分页
+            initPage({$info.count}, {$info.limit});    
+            // 初始化日期选择器
+            initDatePick();
+        }
+        
+        function initDatePick(){
+            
+            var date = $('.search_date');
+                alert(1)
+            date.each(function(){
+            })
+        }
+        
         $('.search_btn').click(function(){
             var data = $('#search_form').serialize();            
             $.ajax({

@@ -13,12 +13,20 @@ return [
     array(
         'title' => '序号',
         'field' => 'id',
-        'is_key' => true,
+        'is_key' => true,        
         // 'alias' => 'a',        
     ),
     array(
         'title' => '用户名',
-        'field' => 'name',        
+        'field' => 'name',
+        'is_search' => array(
+            'type' => 'text',
+            'field' => '',
+            'expression' => array(
+                'rule' => '%s = %s',
+                'value' => array('field', 'value'),
+                ),
+            ),
     ),
     array(
         'title' => '角色',
@@ -30,7 +38,20 @@ return [
     ),
     array(
         'title' => '加入时间',
-        'field' => 'reg_time',        
+        'field' => 'reg_time', 
+        'is_search' => array(
+            'type' => 'date',
+            'is_unix_time' => true,                    
+            'expression' => array(
+                'rule' => '%s >= %s and %s <= %s',
+                'value' => array('field', 'value', 'field', 'value'),
+                ),
+            ),       
+    ),
+    array(
+        'title' => 'ip',
+        'field' => 'reg_ip',        
+        'is_show' => false,      
     ),
     array(
         'title' => '状态',

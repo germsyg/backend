@@ -10,14 +10,23 @@ class Admin extends TableForm
 
 	public function index()
 	{
+		// $where['name'] = 'xiao';
+		// $where['email'] = 'xiao';
+		// $where['reg_time'] = array('>', '123');
+		// $where['id'] = array('in', '1, 2,4');
+		// $or['status'] = 1;
+		// $r = db('admin')->where($where)->whereOr($or)->fetchSql(true)->select();
+		// var_dump($r);die;
+
 		$this->setTable('admin');
 		$this->setTableFieldFile('admin.php');
-		$this->setCallback($this, 'format');
+		$this->setListCallback($this, 'format');
+		$this->setSearchCallback($this, 'formatWhere');
 		parent::table();
 	}
 
 	public function format($res)
-	{		
+	{				
 		$role = model('Role')->getRole();		
 		foreach($res as $k=>&$v){
 			$r = explode(',', $v['role_ids']);
@@ -29,8 +38,13 @@ class Admin extends TableForm
 			$v['reg_time'] = date('Y-m-d H:i:s', $v['reg_time']);
 			$v['operate'] = $this->buildBtn('编辑', url('Admin/edit', ['id'=>$v['id']]));
 		}unset($v);		
-		// var_dump($res);die;
+		
 		return $res;
+	}
+
+	public function formatWhere()
+	{
+
 	}
 
 
