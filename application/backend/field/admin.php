@@ -23,8 +23,8 @@ return [
             'type' => 'text',
             'field' => '',
             'expression' => array(
-                'rule' => '%s = %s',
-                'value' => array('field', 'value'),
+                'rule' => '%s like %%%s%%',
+                'args' => array('name', 'value'),
                 ),
             ),
     ),
@@ -41,11 +41,7 @@ return [
         'field' => 'reg_time', 
         'is_search' => array(
             'type' => 'date',
-            'is_unix_time' => true,                    
-            'expression' => array(
-                'rule' => '%s >= %s and %s <= %s',
-                'value' => array('field', 'value', 'field', 'value'),
-                ),
+            'is_unix_time' => true,                                
             ),       
     ),
     array(

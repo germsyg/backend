@@ -27,7 +27,8 @@ class Admin extends TableForm
 
 	public function format($res)
 	{				
-		$role = model('Role')->getRole();		
+		$role = model('Role')->getRole();
+		var_dump($res);die;		
 		foreach($res as $k=>&$v){
 			$r = explode(',', $v['role_ids']);
 			$v['role_ids'] = '';

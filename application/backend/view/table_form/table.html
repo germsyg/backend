@@ -19,17 +19,11 @@
                         <input type="text" name="{$vo.field}" placeholder="{$vo.title}" autocomplete="off" class="layui-input">
                     {/case}
                     {case value='date'}
-                        <input class="layui-input search_date" placeholder="开始日" name="start" id="{$vo.start.field}">
-                        <input class="layui-input search_date" placeholder="截止日" name="end" id="{$vo.start.field}">
+                        <input class="layui-input search_date" placeholder="开始日" name="{$vo.start.field}" id="{$vo.start.field}">
+                        <input class="layui-input search_date" placeholder="截止日" name="{$vo.end.field}" id="{$vo.end.field}">
                     {/case}
                 {/switch}
             {/volist}
-            <!-- <input class="layui-input " placeholder="开始日" name="start" id="start">
-            <input class="layui-input " placeholder="截止日" name="end" id="end">
-
-            <input type="text" name="name" placeholder="请输入用户名" autocomplete="off" class="layui-input">
- -->
-
             <span class="layui-btn search_btn" ><i class="layui-icon">&#xe615;</i></span>
         </form>
     </div>
@@ -80,20 +74,22 @@
         // laydate.render({
         //   elem: '#' 
         // });
-        initPage();        
-        function initPage(){
+        initJs();        
+        function initJs(){            
             // 初始化法分页
             initPage({$info.count}, {$info.limit});    
             // 初始化日期选择器
             initDatePick();
         }
         
-        function initDatePick(){
-            
+        function initDatePick(){            
             var date = $('.search_date');
-                alert(1)
             date.each(function(){
-            })
+                laydate.render({
+                  elem: '#'+$(this).attr('id')
+                });
+            })                
+            
         }
         
         $('.search_btn').click(function(){
