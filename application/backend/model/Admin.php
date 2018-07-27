@@ -10,14 +10,6 @@ class Admin extends TableForm
 
 	public function index()
 	{
-		// $where['name'] = 'xiao';
-		// $where['email'] = 'xiao';
-		// $where['reg_time'] = array('>', '123');
-		// $where['id'] = array('in', '1, 2,4');
-		// $or['status'] = 1;
-		// $r = db('admin')->where($where)->whereOr($or)->fetchSql(true)->select();
-		// var_dump($r);die;
-
 		$this->setTable('admin');
 		$this->setTableFieldFile('admin.php');
 		$this->setListCallback($this, 'format');
@@ -27,8 +19,7 @@ class Admin extends TableForm
 
 	public function format($res)
 	{				
-		$role = model('Role')->getRole();
-		var_dump($res);die;		
+		$role = model('Role')->getRole();		
 		foreach($res as $k=>&$v){
 			$r = explode(',', $v['role_ids']);
 			$v['role_ids'] = '';

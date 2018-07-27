@@ -23,7 +23,7 @@ return [
             'type' => 'text',
             'field' => '',
             'expression' => array(
-                'rule' => '%s like %%%s%%',
+                'rule' => '%s LIKE "%s%%"',
                 'args' => array('name', 'value'),
                 ),
             ),
@@ -34,7 +34,15 @@ return [
     ),
     array(
         'title' => '邮箱',
-        'field' => 'email',        
+        'field' => 'email',
+        'is_search' => array(
+            'type' => 'text',
+            'field' => '',
+            'expression' => array(
+                'rule' => '%s = "%s"',
+                'args' => array('name', 'value'),
+                ),
+            ),        
     ),
     array(
         'title' => '加入时间',

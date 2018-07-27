@@ -81,17 +81,24 @@ class TableForm extends Backend
 
 		$db = db($this->table);
 		$field = $this->parseField();			
-		$where = $this->parseWhere();	
-
-		$list = $db->field($field)->where($where)->fetchSql(true)->page($page, $limit)->select();						
-		var_dump($list);
+		$where = $this->parseWhere();
+		foreach($where as $k=>$v){						
+			$db->where($v[0], $v[1], trim($v[2]));			
+		}	
+						
+		// $list = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
+		// var_dump($list);die;
+		$list = $db->field($field)->fetchSql(false)->page($page, $limit)->select();		
 		if($this->list_callback){				
 			$list = call_user_func_array(array($this->list_callback['class'], $this->list_callback['func']), array($list));
 		}		
-		
+		// 执行sql后，需要重新赋值where
+		foreach($where as $k=>$v){						
+			$db->where($v[0], $v[1], trim($v[2]));			
+		}
+		$info['count'] = $db->count();
 		$info['config'] = $this->parseConfig();
 		$info['search'] = $this->parseSearch();
-		$info['count'] = $db->where($where)->count();				
 		$info['limit'] = $limit;				
 		$info['list'] = $list;	
 
@@ -137,7 +144,6 @@ class TableForm extends Backend
 		$date = function($conf){
 			$js_id[] = $start['field'] = '__start_'.$conf['field'];
 			$js_id[] = $end['field'] = '__end_'.$conf['field'];
-
 			return array('start'=>$start, 'end'=>$end, 'js_id'=>$js_id);
 		};
 
@@ -173,21 +179,24 @@ class TableForm extends Backend
 						$r['name'] = '';
 						$r['value'] = $input[$v['field']];
 						$ext = vsprintf($v['is_search']['expression']['rule'], $r);						
-						$where[$v['field']] = array('exp', $ext);						
+						$where[] = array($v['field'], 'exp', $ext);						
 					}
 				}else if($v['is_search']['type'] == 'date'){
 					if(!empty($input['__start_'.$v['field']]) && !empty($input['__end_'.$v['field']])){
-						if(isset($v['is_unix_time']) && $v['is_unix_time']){
+						if(isset($v['is_search']['is_unix_time']) && $v['is_search']['is_unix_time']){
 							$start = strtotime($input['__start_'.$v['field']]);
 							$end = strtotime($input['__end_'.$v['field']]) + 86399;
+						}else{
+							$start = $input['__start_'.$v['field']];
+							$end = $input['__end_'.$v['field']];
 						}
-						$where[$v['field']] = array('>=', $start);
-						$where[$v['field']] = array('=<', $end);
+						$where[] = array($v['field'], '>=', $start);
+						$where[] = array($v['field'], '<=', $end);
 					}
 				}
 			}
 		}
-		// var_dump($where);die;
+		
 		return $where;
 	}
 	
