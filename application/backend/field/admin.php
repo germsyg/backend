@@ -13,14 +13,14 @@ return [
     array(
         'title' => '序号',
         'field' => 'id',
-        'is_key' => true,        
-        // 'alias' => 'a',        
+        'is_key' => true,                    
     ),
     array(
         'title' => '用户名',
         'field' => 'name',
         'is_search' => array(
             'type' => 'text',
+            'sort' => 10,
             'field' => '',
             'expression' => array(
                 'rule' => '%s LIKE "%s%%"',
@@ -30,7 +30,7 @@ return [
     ),
     array(
         'title' => '角色',
-        'field' => 'role_ids',        
+        'field' => 'role_ids',       
     ),
     array(
         'title' => '邮箱',
@@ -38,6 +38,7 @@ return [
         'is_search' => array(
             'type' => 'text',
             'field' => '',
+            'sort' => 1,
             'expression' => array(
                 'rule' => '%s = "%s"',
                 'args' => array('name', 'value'),
@@ -48,6 +49,7 @@ return [
         'title' => '加入时间',
         'field' => 'reg_time', 
         'is_search' => array(
+            // 'sort' => 5,
             'type' => 'date',
             'is_unix_time' => true,                                
             ),       
@@ -55,11 +57,25 @@ return [
     array(
         'title' => 'ip',
         'field' => 'reg_ip',        
-        'is_show' => false,      
+        'is_show' => false,  
+        'is_search' => array(            
+            'type' => 'checkbox',
+            'option' => array(
+                '本地' => array('value' => '127.0.0.1',),
+                '其他' => array('value' => '192.168.1.1', 'checked' => false ),
+                ),
+            ),     
     ),
     array(
         'title' => '状态',
-        'field' => 'status',        
+        'field' => 'status',
+        'is_search' => array(            
+            'type' => 'select',
+            'option' => array(
+                '正常' => 1,
+                '禁用' => 0,
+                ),
+            ),             
     ),
     array(
         'title' => '操作',

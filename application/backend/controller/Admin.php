@@ -24,7 +24,7 @@ class Admin extends Backend
             $info[$k]['role'] = '';
             if($v['role_ids']){
                 $user_role = explode(',', $v['role_ids']);
-                foreach($user_role as $kr=>$vr){
+                foreach($user_role as $kr=>$vr){ 
                     $info[$k]['role'] .= $role[$vr]['name'].', ';
                 }
             }

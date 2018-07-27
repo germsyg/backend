@@ -19,11 +19,32 @@
                         <input type="text" name="{$vo.field}" placeholder="{$vo.title}" autocomplete="off" class="layui-input">
                     {/case}
                     {case value='date'}
-                        <input class="layui-input search_date" placeholder="开始日" name="{$vo.start.field}" id="{$vo.start.field}">
-                        <input class="layui-input search_date" placeholder="截止日" name="{$vo.end.field}" id="{$vo.end.field}">
+                        {$vo.title}:
+                        <input class="layui-input search_date" placeholder="start" name="{$vo.start.field}" id="{$vo.start.field}">
+                        <input class="layui-input search_date" placeholder="end" name="{$vo.end.field}" id="{$vo.end.field}">
+                    {/case}
+                    {case value="select"}
+                        <div class="layui-input-inline">
+                            <select name="{$vo.field}" lay-verify="" >
+                                <option value="">{$vo.title}</option>
+                                {volist name="vo.option" id="o"}
+                                <option value="{$o.value}">{$o.key}</option>
+                                {/volist}                                            
+                            </select>  
+                        </div> 
+                    {/case}
+                    {case value="checkbox"}
+                        <div class="layui-input-inline">
+                            {volist name="vo.option" id="o"}
+                            <input type="checkbox" name="{$vo.field}[]" title="{$o.key}" lay-skin="primary" value='{$o.value}' {if $o.checked}checked="checked">{/if}
+                            {/volist}                                            
+                        </div> 
                     {/case}
                 {/switch}
+                &nbsp;&nbsp;
             {/volist}
+            
+
             <span class="layui-btn search_btn" ><i class="layui-icon">&#xe615;</i></span>
         </form>
     </div>
@@ -123,6 +144,7 @@
                             data: data+'&page='+obj.curr+'&limit='+obj.limit,
                             success:function(res){
                                 $('#tr').html(res.data.html);
+                                form.render();
                             }
                         });
                     }

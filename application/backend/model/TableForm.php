@@ -82,10 +82,10 @@ class TableForm extends Backend
 		$db = db($this->table);
 		$field = $this->parseField();			
 		$where = $this->parseWhere();
+						// var_dump($where);
 		foreach($where as $k=>$v){						
-			$db->where($v[0], $v[1], trim($v[2]));			
+			$db->where($v[0], $v[1], $v[2]);			
 		}	
-						
 		// $list = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
 		// var_dump($list);die;
 		$list = $db->field($field)->fetchSql(false)->page($page, $limit)->select();		
@@ -94,7 +94,7 @@ class TableForm extends Backend
 		}		
 		// 执行sql后，需要重新赋值where
 		foreach($where as $k=>$v){						
-			$db->where($v[0], $v[1], trim($v[2]));			
+			$db->where($v[0], $v[1], $v[2]);			
 		}
 		$info['count'] = $db->count();
 		$info['config'] = $this->parseConfig();
@@ -147,6 +147,26 @@ class TableForm extends Backend
 			return array('start'=>$start, 'end'=>$end, 'js_id'=>$js_id);
 		};
 
+		$select = function($conf){
+			// var_dump($conf);die;
+			foreach($conf['is_search']['option'] as $k=>$v){
+				$temp['key'] = $k;
+				$temp['value'] = $v;
+				$data[] = $temp;
+			}
+			return array('option' => $data);
+		};
+
+		$checkbox = function($conf){
+			foreach($conf['is_search']['option'] as $k=>$v){
+				$temp['key'] = $k;
+				$temp['value'] = $v['value'];
+				$temp['checked'] = isset($v['checked']) ? $v['checked'] : true;
+				$data[] = $temp;
+			}
+			return array('option' => $data);
+		};
+
 		foreach($config as $k=>$v){
 			$data = array();
 			if(isset($v['is_search'])){
@@ -156,25 +176,26 @@ class TableForm extends Backend
 				}	
 				$data['title'] = $v['title'];
 				$data['type'] = $v['is_search']['type'];
-
+				isset($v['is_search']['sort']) && $data['sort'] = $v['is_search']['sort'];
 				$data = array_merge($data, ${$v['is_search']['type']}($v));							
 				$search[] = $data;
 			}
-		}
-// var_dump($search);die;
+		}		
+		arraySort($search, 'sort', 'asc');
+		// var_dump($search);die;
 		return $search;
 	}
 
 	protected function parseWhere()
 	{
-		$input = input('post.');
+		$input = input('param.');		
 		$where = array();
 		$config = $this->table_config;
 		$where = array();
 		foreach($config as $k=>$v){
 			if(isset($v['is_search'])){
 				if($v['is_search']['type'] == 'text'){
-					if(!empty($input[$v['field']])){
+					if(isset($input[$v['field']]) && trim($input[$v['field']]) != ''){
 						$r = array_flip($v['is_search']['expression']['args']);
 						$r['name'] = '';
 						$r['value'] = $input[$v['field']];
@@ -193,10 +214,32 @@ class TableForm extends Backend
 						$where[] = array($v['field'], '>=', $start);
 						$where[] = array($v['field'], '<=', $end);
 					}
+				}else if ($v['is_search']['type'] == 'select'){
+					if(isset($input[$v['field']]) && trim($input[$v['field']]) != ''){
+						$where[] = array($v['field'], '=', $input[$v['field']]);
+					}
+				}else if ($v['is_search']['type'] == 'checkbox'){							
+					if(isset($input[$v['field']]) && !empty($input[$v['field']])){
+						$where[] = array($v['field'], 'in', $input[$v['field']]);
+					}else{
+						$value = array();
+						$exp = 'in';
+						foreach($v['is_search']['option'] as $ko => $vo){
+							$checked = isset($vo['checked']) ? $vo['checked'] : true;
+							if(request()->isAjax() && !isset($input[$v['field']])){
+								$exp = 'not in';
+								$checked = true;
+							}
+							if($checked){
+								$value[] = $vo['value'];
+							}
+						}
+						!empty($value) && $where[] = array($v['field'], $exp, $value);
+					}
 				}
 			}
 		}
-		
+		// var_dump($where);die;
 		return $where;
 	}
 	
