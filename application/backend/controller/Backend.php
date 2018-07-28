@@ -10,7 +10,7 @@ class Backend extends Authorize
     protected $suc = array('status'=>1, 'msg'=>'success', 'data'=>'');
     // failed 返回
     protected $fai = array('status'=>0, 'msg'=>'failed', 'data'=>'');
-    // true为返回sql
+    // true为打印sql
     protected $fetchSql = false;
 
     protected function lists($table, $where='', $field='*', $other=[])
@@ -18,8 +18,7 @@ class Backend extends Authorize
         if(!$table){
             return false;
         }       
-        $obj = db($table);
-        
+        $obj = db($table);        
         
         $page = isset($other['page']) ? $other['page'] : 1;
         $limit = isset($other['limit']) ? $other['limit'] : 50;

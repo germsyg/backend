@@ -1,0 +1,13 @@
+{volist name="info.list" id="vo"}
+<tr>
+    {volist name="info.config" id="c"}
+    {if isset($c.is_key) && $c.is_key}
+    <td>
+        <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$vo[$c.field]}'><i class="layui-icon">&#xe605;</i></div>
+    </td>
+    <input type="hidden" name="{$c.field}" value="{$vo[$c.field]}">
+    {/if}
+    <td>{$vo[$c.field]}</td>
+    {/volist}
+</tr>
+{/volist}

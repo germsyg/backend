@@ -442,7 +442,7 @@ if (!function_exists('view')) {
      * @return \think\response\View
      */
     function view($template = '', $vars = [], $replace = [], $code = 200)
-    {
+    {        
         return Response::create($template, 'view', $code)->replace($replace)->assign($vars);
     }
 }

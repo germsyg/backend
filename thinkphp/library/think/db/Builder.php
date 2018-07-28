@@ -386,7 +386,7 @@ abstract class Builder
             } else {
                 $whereStr .= $key . ' ' . $exp . ' ' . $this->parseValue($value, $field);
             }
-        } elseif ('EXP' == $exp) {
+        } elseif ('EXP' == $exp) {            
             // 表达式查询
             if ($value instanceof Expression) {
                 $whereStr .= '( ' . $key . ' ' . $value->getValue() . ' )';

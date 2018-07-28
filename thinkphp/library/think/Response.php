@@ -70,8 +70,11 @@ class Response
     public static function create($data = '', $type = '', $code = 200, array $header = [], $options = [])
     {
         $class = false !== strpos($type, '\\') ? $type : '\\think\\response\\' . ucfirst(strtolower($type));
-        if (class_exists($class)) {
+
+        if (class_exists($class)) {  
+        // var_dump($class);          
             $response = new $class($data, $code, $header, $options);
+            // var_dump($response);
         } else {
             $response = new static($data, $code, $header, $options);
         }
