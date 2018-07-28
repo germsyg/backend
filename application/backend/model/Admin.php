@@ -13,7 +13,8 @@ class Admin extends TableForm
 		$this->setTable('admin');
 		$this->setTableFieldFile('admin.php');
 		$this->setListCallback($this, 'format');
-		$this->setSearchCallback($this, 'formatWhere');
+		$this->setSearchCallback($this, 'formatSearch');
+		$this->setWhereCallback($this, 'formatWhere');
 		parent::table();
 	}
 
@@ -34,9 +35,14 @@ class Admin extends TableForm
 		return $res;
 	}
 
-	public function formatWhere()
+	public function formatWhere($where)
 	{
+		return $where;
+	}
 
+	public function formatSearch($search)
+	{
+		return $search;
 	}
 
 

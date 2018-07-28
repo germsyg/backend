@@ -18,8 +18,11 @@ class TableForm extends Backend
 	// 列表数据回调方法
 	protected $list_callback = array();
 
-	// 搜索数据where回调
+	// 搜索数据search回调
 	protected $search_callback = array();
+
+	// 搜索数据where回调
+	protected $where_callback = array();
 
 	// 查询筛选
 	protected $filter = '';
@@ -46,6 +49,11 @@ class TableForm extends Backend
 		$this->table_field_file = $file;
 	}
 
+	/**
+	 * 配置表格
+	 * @author XZJ 2018-07-28T11:02:29+0800
+	 * @param  [type] $config [description]
+	 */
 	protected function setTableConfig($config)
 	{
 		$this->table_config = $config;
@@ -62,10 +70,28 @@ class TableForm extends Backend
 		$this->list_callback['func'] = $func;
 	}
 
+	/**
+	 * 回调，二次处理where搜索
+	 * @author XZJ 2018-07-28T11:17:19+0800
+	 * @param  [type] $class [description]
+	 * @param  [type] $func  [description]
+	 */
 	protected function setSearchCallback($class, $func)
 	{
 		$this->search_callback['class'] = $class;
 		$this->search_callback['func'] = $func;	
+	}
+
+	/**
+	 * 回调，二次处理模板搜索
+	 * @author XZJ 2018-07-28T11:17:35+0800
+	 * @param  [type] $class [description]
+	 * @param  [type] $func  [description]
+	 */
+	protected function setWhereCallback($class, $func)
+	{
+		$this->where_callback['class'] = $class;
+		$this->where_callback['func'] = $func;	
 	}
 
 	/**
@@ -120,6 +146,11 @@ class TableForm extends Backend
 			
 	}
 
+	/**
+	 * 解析配置文件中配置
+	 * @author XZJ 2018-07-28T11:03:18+0800
+	 * @return [type] [description]
+	 */
 	protected function parseConfig()
 	{
 		$config = $this->table_config;
@@ -131,6 +162,11 @@ class TableForm extends Backend
 		return $config;
 	}
 
+	/**
+	 * 解析模板搜索条件
+	 * @author XZJ 2018-07-28T11:03:38+0800
+	 * @return [type] [description]
+	 */
 	protected function parseSearch()
 	{
 		$config = $this->table_config;
@@ -182,10 +218,19 @@ class TableForm extends Backend
 			}
 		}		
 		arraySort($search, 'sort', 'asc');
+		if($this->search_callback){				
+			$where = call_user_func_array(array($this->search_callback['class'], $this->search_callback['func']), array($search));
+		}		
 		// var_dump($search);die;
 		return $search;
 	}
 
+
+	/**
+	 * 解析搜索条件
+	 * @author XZJ 2018-07-28T11:04:08+0800
+	 * @return [type] [description]
+	 */
 	protected function parseWhere()
 	{
 		$input = input('param.');		
@@ -195,6 +240,7 @@ class TableForm extends Backend
 		foreach($config as $k=>$v){
 			if(isset($v['is_search'])){
 				if($v['is_search']['type'] == 'text'){
+					// 解析text
 					if(isset($input[$v['field']]) && trim($input[$v['field']]) != ''){
 						$r = array_flip($v['is_search']['expression']['args']);
 						$r['name'] = '';
@@ -203,6 +249,7 @@ class TableForm extends Backend
 						$where[] = array($v['field'], 'exp', $ext);						
 					}
 				}else if($v['is_search']['type'] == 'date'){
+					// 解析日期搜索
 					if(!empty($input['__start_'.$v['field']]) && !empty($input['__end_'.$v['field']])){
 						if(isset($v['is_search']['is_unix_time']) && $v['is_search']['is_unix_time']){
 							$start = strtotime($input['__start_'.$v['field']]);
@@ -215,10 +262,12 @@ class TableForm extends Backend
 						$where[] = array($v['field'], '<=', $end);
 					}
 				}else if ($v['is_search']['type'] == 'select'){
+					// 解析select搜索
 					if(isset($input[$v['field']]) && trim($input[$v['field']]) != ''){
 						$where[] = array($v['field'], '=', $input[$v['field']]);
 					}
 				}else if ($v['is_search']['type'] == 'checkbox'){							
+					// 解析checkbox搜索
 					if(isset($input[$v['field']]) && !empty($input[$v['field']])){
 						$where[] = array($v['field'], 'in', $input[$v['field']]);
 					}else{
@@ -238,7 +287,10 @@ class TableForm extends Backend
 					}
 				}
 			}
-		}
+		}		
+		if($this->where_callback){				
+			$where = call_user_func_array(array($this->where_callback['class'], $this->where_callback['func']), array($where));
+		}		
 		// var_dump($where);die;
 		return $where;
 	}
@@ -259,6 +311,11 @@ class TableForm extends Backend
 		$this->setTableConfig($config);		
 	}
 
+	/**
+	 * 解析配置中的搜索语句
+	 * @author XZJ 2018-07-28T11:04:45+0800
+	 * @return [type] [description]
+	 */
 	protected function parseField()
 	{
 		$config = $this->table_config;		
@@ -278,6 +335,14 @@ class TableForm extends Backend
 		return trim($str, ', ');		
 	}
 
+	/**
+	 * 生成表格按钮
+	 * @author XZJ 2018-07-28T11:05:19+0800
+	 * @param  [type] $text [description]
+	 * @param  [type] $url  [description]
+	 * @param  string $icon [description]
+	 * @return [type]       [description]
+	 */
 	protected function buildBtn($text, $url, $icon='')
 	{			
 		if(!$icon){
@@ -291,6 +356,14 @@ class TableForm extends Backend
         return $html;
 	}
 
+	/**
+	 * 生成表格switch
+	 * @author XZJ 2018-07-28T11:05:35+0800
+	 * @param  [type]  $text    [description]
+	 * @param  [type]  $value   [description]
+	 * @param  boolean $checked [description]
+	 * @return [type]           [description]
+	 */
 	protected function buildSwitch($text, $value, $checked=true)
 	{
 		if($checked){
