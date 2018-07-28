@@ -27,7 +27,19 @@ class TableForm extends Backend
 	// 查询筛选
 	protected $filter = '';
 
+	protected $form_config;
 
+	protected $form_field_file;
+
+	protected function setFormFieldFile($file)
+	{
+		$this->form_field_file = $file;
+	}
+
+	protected function setFormConfig($config)
+	{
+		$this->form_config = $config;
+	}
 
 	/**
 	 * 设置查询的主表
@@ -383,6 +395,57 @@ class TableForm extends Backend
 	 */
 	protected function form()
 	{
+		$this->loadFormFieldFile();
 
+		$info['field'] = $this->parseFormField();
+		// var_dump($info['field']);die;
+
+		$view = view('table_form/form');					
+		$view->assign('info', $info);
+		$view->send();
 	}
+
+	public function parseJsVerify()
+	{
+		
+	}
+
+	public function parseFormField()
+	{
+		$config = $this->form_config;
+		foreach($config as $k=>&$v){
+			if(!isset($v['validate'])){
+				$v['validate'] = false;
+			}else{
+				if(!isset($v['validate']['reg'])){
+					$v['validate']['reg'] = '!/\S+/';
+				}
+				if(!isset($v['validate']['reg'])){
+					$v['validate']['err'] = $v['title'].'不能为空';
+				}
+			}
+			if(in_array($v['type'], array('select', 'radio', 'checkbox'))){
+				foreach($v['option'] as $ko=>&$vo){
+					$vo['checked'] = isset($vo['checked']) ?: false; 
+				}
+			}
+		} 
+		// var_dump($config);die;
+		return $config;
+	}
+
+	protected function loadFormFieldFile()
+	{
+		// 路径在与model同级的field文件夹下		
+		if(empty($config)){
+			$path = dirname(__DIR__);
+			$file = $path . DS . 'field' . DS . $this->form_field_file;		
+			$config = '';
+			if(is_file($file)){
+				$config = require_once $file;
+				
+			}
+		}
+		$this->setFormConfig($config);		
+	}	
 }
