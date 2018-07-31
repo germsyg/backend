@@ -2,6 +2,14 @@
 {block name="header"}
 <link rel="stylesheet" href="/static/backend/css/font.css">
 <link rel="stylesheet" href="/static/backend/css/xadmin.css">
+<script language="javascript" src="/static/backend/js/kindeditor/kindeditor-min.js"></script>
+<!-- <script language="javascript" src="/static/commom/js/kindeditor/lang/en.js"></script> -->
+<style type="text/css">
+    .upload_box {margin-top: 5px;}
+    .upload_box li{float: left;width: 150px; height: 150px; border: 1px solid #ded4d4; margin-right: 5px;}
+    .upload_box li span{height: 150px; line-height: 150px; text-align: center; display: block;}
+    .upload_box li img{max-width: 148px; max-height: 148px;vertical-align: middle;}
+</style>
 {/block}
 {block name="content"}
 <div class="x-body">
@@ -27,20 +35,106 @@
             </div>        
             {/case}
 
+            {case value="password"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info[$vo.field]|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div>        
+            {/case}
+
             {case value="textarea"}
             <div class="layui-form-item" >
                 <label for="{$vo.field}" class="layui-form-label">
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">
-                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify="required"{/if}>{$info[$vo.field]|default=''}</textarea>
-                    <!-- <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify="{$vo.field}"{/if}>{$info[$vo.field]|default=''}</textarea> -->
+                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if}>{$info[$vo.field]|default=''}</textarea>
                 </div>
                 <div class="layui-form-mid layui-word-aux">
                     {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
                 </div>
             </div> 
             {/case}   
+
+            {case value="editor"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 500px;">
+                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if} id="textarea_{$vo.field}">{$info[$vo.field]|default=''}</textarea>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            <script type="text/javascript">
+                $(function () {
+                    //初始化编辑框
+                    editor_obj = editor = KindEditor.create('#textarea_{$vo.field}', {
+                        height: 400,
+                        allowPreviewEmoticons: false,
+                        allowImageUpload: true, //允许上传图片
+                        allowFileManager: true, //允许对上传图片进行管理
+                        urlType: 'domain',
+                        uploadJson: 'index.php?com=affiliate&t=uploadImag',                        
+                        afterUpload: function() {
+                            this.sync();
+                        }, //图片上传后，将上传内容同步到textarea中
+                        afterBlur: function() {
+                            this.sync();
+                        }
+                    });
+                    /*var reviews_content = $("#reviews_content").html();
+                    editor_obj.val(reviews_content);*/
+
+                })
+            </script>
+            {/case} 
+
+            {case value="upload"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 800px;">
+                    <button type="button" class="layui-btn" id="upload_{$vo.field}">
+                        <i class="layui-icon">&#xe67c;</i>上传{$vo.title}
+                    </button>
+                    <div class="upload_box">
+                        <ul>
+                            <li ><span><img src="/upload/tt.jpg" ></span></li>
+                            <li ><span><img src="/upload/tt2.jpg" ></span></li>                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            <script type="text/javascript">
+                layui.use(['upload'], function(){
+                    upload = layui.upload;
+                    var uploadInst = upload.render({
+                        elem: '#upload_{$vo.field}',        
+                        url: '/upload/',   
+                        done: function(res) {
+                            //上传完毕回调
+                        },
+                        error: function() {
+                            //请求异常回调
+                        }
+                    });
+                });
+            </script>
+            {/case}  
 
             {case value="select"}
             <div class="layui-form-item" >
@@ -66,16 +160,32 @@
                 <label for="{$vo.field}" class="layui-form-label">
                     {$vo.title}: 
                 </label>
-                <div class="layui-input-inline" >                    
+                <div class="layui-input-inline" style="width: 500px;">                    
                     {volist name="vo.option" id="o"}
-                        <input type="radio" name="{$vo.field}" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if}>                      
+                        <input type="radio" name="{$vo.field}" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if}>
                     {/volist}                    
                 </div>
                 <div class="layui-form-mid layui-word-aux">
                     {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
                 </div>
             </div> 
-            {/case} 
+            {/case}   
+
+            {case value="checkbox"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 500px;">                    
+                    {volist name="vo.option" id="o"}
+                        <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if}>
+                    {/volist}                    
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            {/case}            
 
             {/switch}
         {/volist}
@@ -90,17 +200,24 @@
     </form>
 </div>
 <script>
-layui.use(['form','layer'], function(){
+layui.use(['form', 'layer'], function(){
     $ = layui.jquery;
     var form = layui.form,
-    layer = layui.layer;
+    layer = layui.layer;    
 
-    form.verify({
-        'name': function(value, item){              
-            if(!/\S+/.test(value)){
-                return '123123';
-            }
-        }
+    
+    
+
+    // form.verify({
+        // 'name': function(value, item){              
+        //     if(!/\S+/.test(value)){
+        //         layer.open({
+        //           title: '在线调试'
+        //           ,content: '可以填写任意的layer代码'
+        //         });     
+        //         return ;
+        //     }
+        // }
         // 'config': function(v, i){
         //     if(!/[\S]+/.test(v)){
         //         return 'config';
@@ -108,9 +225,15 @@ layui.use(['form','layer'], function(){
         // }
 
 
-    });
+    // });
     //监听提交
-    form.on('submit(add)', function(data){        
+    form.on('submit(add)', function(data){ 
+        console.log(data.field);       
+        $.each(data.field, function(i, e){
+                  
+        });
+            
+        
         // $.ajax({
         //     url: $(this).attr('url'),
         //     type: "post",

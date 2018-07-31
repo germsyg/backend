@@ -76,7 +76,7 @@ function randomString($length = 6) {
  * @return [type]         [description]
  */
 function arraySort(&$array, $key, $sort='desc'){
-	$a1 = $a2 = array();
+	$a1 = $a2 = $s = array();
 	foreach($array as $k=>$v){
 		if(isset($v[$key])){
 			$a1[] = $v;

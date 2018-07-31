@@ -229,7 +229,9 @@ class TableForm extends Backend
 				$search[] = $data;
 			}
 		}		
-		arraySort($search, 'sort', 'asc');
+		if(empty($search)){
+			arraySort($search, 'sort', 'asc');
+		}
 		if($this->search_callback){				
 			$where = call_user_func_array(array($this->search_callback['class'], $this->search_callback['func']), array($search));
 		}		
@@ -407,7 +409,7 @@ class TableForm extends Backend
 
 	public function parseJsVerify()
 	{
-		
+
 	}
 
 	public function parseFormField()
