@@ -386,7 +386,7 @@ class File extends SplFileObject
     {
         // 自动生成文件名
         if (true === $savename) {
-            if ($this->rule instanceof \Closure) {
+            if ($this->rule instanceof \Closure) {                
                 $savename = call_user_func_array($this->rule, [$this]);
             } else {
                 switch ($this->rule) {

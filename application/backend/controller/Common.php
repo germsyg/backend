@@ -27,4 +27,10 @@ class Common extends Backend
     {
         return md5($input_pwd.$this->code.$salt) === $user_pwd;
     }
+
+    public function uploadImg()
+    {   
+        $event = controller('common/Upload');
+        return $event->uploadImg();        
+    }
 }

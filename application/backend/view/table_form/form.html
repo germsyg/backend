@@ -105,13 +105,13 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline" style="width: 800px;">
-                    <button type="button" class="layui-btn" id="upload_{$vo.field}">
+                    <button type="button" class="layui-btn " id="upload_{$vo.field}" disabled>
                         <i class="layui-icon">&#xe67c;</i>上传{$vo.title}
                     </button>
                     <div class="upload_box">
                         <ul>
-                            <li ><span><img src="/upload/tt.jpg" ></span></li>
-                            <li ><span><img src="/upload/tt2.jpg" ></span></li>                            
+                            <!-- <li><span><img src="/upload/tt.jpg" ></span></li> -->
+                                           
                         </ul>
                     </div>
                 </div>
@@ -124,12 +124,32 @@
                     upload = layui.upload;
                     var uploadInst = upload.render({
                         elem: '#upload_{$vo.field}',        
-                        url: '/upload/',   
-                        done: function(res) {
-                            //上传完毕回调
+                        url: '/backend/Common/uploadImg',
+                        data: {path: '2018'},
+                        accept: 'file',
+                        // exts: 'jpeg|jpg',
+                        size: 1024,
+                        multiple: true,
+                        // auto: false,
+                        choose: function(obj){
+                            console.log(obj);
+                            alert(123);  
+                            return false;                          
                         },
-                        error: function() {
-                            //请求异常回调
+                        before: function(obj){
+                            alert(123);return false;
+                        },
+                        done: function(res) {
+                            if(res.status == 1){                                
+                                var id = this.elem[0].id;
+                                var box = $('#'+id).closest('.layui-form-item').find('.upload_box > ul');
+                                box.append('<li><span><img src="/upload/'+res.data.saveName+'" ></span></li>');
+                            }else{
+                                alert(res.msg);
+                            }
+                        },
+                        error: function(res) {
+
                         }
                     });
                 });
@@ -205,27 +225,6 @@ layui.use(['form', 'layer'], function(){
     var form = layui.form,
     layer = layui.layer;    
 
-    
-    
-
-    // form.verify({
-        // 'name': function(value, item){              
-        //     if(!/\S+/.test(value)){
-        //         layer.open({
-        //           title: '在线调试'
-        //           ,content: '可以填写任意的layer代码'
-        //         });     
-        //         return ;
-        //     }
-        // }
-        // 'config': function(v, i){
-        //     if(!/[\S]+/.test(v)){
-        //         return 'config';
-        //     }
-        // }
-
-
-    // });
     //监听提交
     form.on('submit(add)', function(data){ 
         console.log(data.field);       

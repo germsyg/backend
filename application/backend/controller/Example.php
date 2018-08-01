@@ -25,4 +25,11 @@ class Example extends Backend
         $input = input('post.');
     }
 
+    public function uploadImg()
+    {
+        $event = controller('common/Upload');
+        $res = $event->uploadImg();
+        return $res;
+    }
+
 }

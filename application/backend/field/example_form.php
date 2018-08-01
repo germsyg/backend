@@ -61,7 +61,12 @@ return [
     array(
         'title' => '图片',
         'field' => 'img',
-        'type' => 'upload',        
+        'type' => 'upload',
+        'option' => array(
+            'ext' => array('jpg', 'jpeg'), //默认允许格式 'gif', 'jpg', 'jpeg', 'bmp', 'png', 'swf'
+            'size' => 1000, //单位 k，默认3000
+            'path' => 'example', // 根目录 public/upload + 'path'
+            ),
     ),
     array(
         'title' => '图片2',
