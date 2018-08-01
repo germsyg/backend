@@ -416,6 +416,7 @@ class TableForm extends Backend
 	{
 		$config = $this->form_config;
 		foreach($config as $k=>&$v){
+			// 验证
 			if(!isset($v['validate'])){
 				$v['validate'] = false;
 			}else{
@@ -426,9 +427,26 @@ class TableForm extends Backend
 					$v['validate']['err'] = $v['title'].'不能为空';
 				}
 			}
+			// 默认选项
 			if(in_array($v['type'], array('select', 'radio', 'checkbox'))){
 				foreach($v['option'] as $ko=>&$vo){
 					$vo['checked'] = isset($vo['checked']) ?: false; 
+				}
+			}
+
+			// 图片选项
+			if(in_array($v['type'], array('upload'))){
+				// 后缀限制
+				if(isset($v['option']['ext'])){
+					$v['option']['exts'] = implode('|', $v['option']['ext']);
+				}else{
+					$v['option']['exts'] = 'gif|jpg|jpeg|bmp|png|swf';
+				}
+				if(!isset($v['option']['size'])){
+					$v['option']['size'] = 3072;
+				}
+				if(!isset($v['option']['path'])){
+					$v['option']['path'] = '';
 				}
 			}
 		} 

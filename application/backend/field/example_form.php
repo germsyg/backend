@@ -64,7 +64,7 @@ return [
         'type' => 'upload',
         'option' => array(
             'ext' => array('jpg', 'jpeg'), //默认允许格式 'gif', 'jpg', 'jpeg', 'bmp', 'png', 'swf'
-            'size' => 1000, //单位 k，默认3000
+            'size' => 1024, //单位 k，默认3072
             'path' => 'example', // 根目录 public/upload + 'path'
             ),
     ),
