@@ -448,6 +448,9 @@ class TableForm extends Backend
 				if(!isset($v['option']['path'])){
 					$v['option']['path'] = '';
 				}
+				if(!isset($v['option']['num'])){
+					$v['option']['num'] = 1;
+				}
 			}
 		} 
 		// var_dump($config);die;

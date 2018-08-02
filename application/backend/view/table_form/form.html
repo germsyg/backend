@@ -106,10 +106,10 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline" style="width: 800px;">
-                    <button type="button" class="layui-btn " id="upload_{$vo.field}" >
+                    <button type="button" class="layui-btn js-upload-btn" id="upload_{$vo.field}" num="{$vo.option.num}" title="数量限制 {$vo.option.num}">
                         <i class="layui-icon">&#xe67c;</i>上传{$vo.title}
                     </button>
-                    <div class="upload_box">
+                    <div class="upload_box">                        
                         <ul>
                             <!-- <li><i class="layui-icon js-del-img">&#xe640;</i><span><img src="/upload/tt.jpg" ></span><input type="hidden" name="{$vo.field}[]" value="lkhj"></li> -->
                         </ul>
@@ -133,8 +133,8 @@
                             if(res.status == 1){                                
                                 var id = this.elem[0].id;
                                 var box = $('#'+id).closest('.layui-form-item').find('.upload_box > ul');
-                                box.append('<li><i class="layui-icon js-del-img">&#xe640;</i><span><img src="/upload/'+res.data.saveName+'" ></span><input type="hidden" name="{$vo.field}[]" value="'+res.data.saveName+'"></li>');
-                                forbidBtn(id);
+                                box.append('<li><i class="layui-icon js-del-img">&#xe640;</i><span><img src="/upload/'+res.data.saveName+'" ></span><input type="hidden" name="{$vo.field}[]" value="'+res.data.saveName+'"></li>');               
+                                checkBtn(id);
                             }else{
                                 layer.msg('上传失败，稍后再试');
                             }
