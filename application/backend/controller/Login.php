@@ -3,11 +3,12 @@ namespace app\backend\controller;
 use think\Controller;
 use think\Db;
 use think\Session;
+use think\Config;
 
 class Login extends Backend
 {
     public function index()
-    {                                    
+    {                               
         if(session::get('admin')){            
             $this->redirect('Index/index');
         }else{

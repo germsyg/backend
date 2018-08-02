@@ -247,12 +247,17 @@ class App
         } else {
             // 加载模块配置
             $config = Config::load(CONF_PATH . $module . 'config' . CONF_EXT);
-
             // 读取数据库配置文件
             // $filename = CONF_PATH . $module . 'database' . CONF_EXT;            
             // Config::load($filename, 'database');
             
             // --selfconfig 根据环境来加载数据库等配置
+            // 修改了整体配置，加载顺序以下
+            // 1、默认系统配置think/convension.php
+            // 2、应用配置，入口文件修改了路径， 所以为application/config/config.php
+            // 3、模块配置，如application/config/backend/config.php
+            // 4、环境配置，如application/config/environment/config.php
+            // 配置以最后的替代前面的
             $env = getenv('environment');            
             if (is_dir(CONF_PATH . 'environment' . DS . $env)) {
                 $dir = CONF_PATH . 'environment' . DS . $env;                       
@@ -260,7 +265,12 @@ class App
                 foreach ($files as $file) {
                     if ('.' . pathinfo($file, PATHINFO_EXTENSION) === CONF_EXT) {
                         $filename = $dir . DS . $file;
-                        Config::load($filename, pathinfo($file, PATHINFO_FILENAME));
+                        if(pathinfo($file, PATHINFO_FILENAME) == 'config'){
+                            // 加入环境config.php文件
+                            Config::load($filename);    
+                        }else{
+                            Config::load($filename, pathinfo($file, PATHINFO_FILENAME));
+                        }
                     }
                 }                
             }
