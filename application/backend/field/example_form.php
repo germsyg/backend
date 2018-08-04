@@ -15,7 +15,7 @@
  * field，保存数量时传到后台的字段名， 必须有
  * is_key，表单中的标识，一般对应数据库的主键， 必须且只有一个
  * tip，输入框旁边的提示
- * type，字段类型，用于展示不同的内容，必须有，值为 text|password|textarea|editor|select|upload|checkbox|radio
+ * type，字段类型，用于展示不同的内容，必须有，值为 text|password|textarea|editor|select|upload|checkbox|radio|date
  * validate，字段js验证
  *
  * 具体使用方法如下
@@ -34,7 +34,7 @@ return [
         'type' => 'text',
         'validate' =>  array(   // js验证
             'require' => true,      //不能为空
-            'reg' => '!/\S+/',  //按需自定义验证正则，默认 '!/\S+/'
+            'reg' => '/\S+/',  //按需自定义验证正则，默认 '/\S+/'
             'err' => '配置名不能空',  //验证不通过的提示， 默认 'title值+不能为空'
             ),
         'tip' => '配置',  //输入旁边的提示
@@ -46,13 +46,25 @@ return [
     ),
     array(
         'title' => '内容',
-        'field' => 'type',
+        'field' => 'content',
         'type' => 'textarea',        
     ),
     array(
         'title' => '长内容',
         'field' => 'longcontent',
         'type' => 'editor',        // js在线编辑器
+    ),
+    array(
+        'title' => '时间',
+        'field' => 'add_time',
+        'type' => 'date',        // 日期拾取器, 具体设置 http://www.layui.com/doc/modules/laydate.html
+        'option' => array(
+            'type' => 'date',    // 选择器类型，默认date，date|year|month|time|datetime5种 
+            'format' => 'yyyy-MM-dd',  // 格式，默认yyyy-MM-dd, 参考layui日期选择器，
+            'value' => '',  //初始值，默认空
+            'min' => '',    // 日期范围，默认空， 最小1900-01-01
+            'max' => '',  // 日期范围，默认空， 最大3000-01-01
+            ),
     ),
     array(
         'title' => '地区',
@@ -66,11 +78,6 @@ return [
             ),
     ),
     array(
-        'title' => '长内容2',
-        'field' => 'longcontent2',
-        'type' => 'editor',        
-    ),
-    array(
         'title' => '图片',
         'field' => 'img',
         'type' => 'upload',
@@ -80,11 +87,10 @@ return [
             'path' => 'example', // 根目录 public/upload + 'path'
             'num' => 2, // 数量限制，默认1
             ),
-    ),
-    array(
-        'title' => '图片2',
-        'field' => 'img2',
-        'type' => 'upload',        
+        // 'validate' =>  array(   // js验证
+        //     'require' => true,      //不能为空
+        //     'reg' => '/\S+/',  //按需自定义验证正则，默认 '!/\S+/'
+        // ),  
     ),
     array(
         'title' => '类型',
@@ -93,10 +99,14 @@ return [
         'option' => array(  // 类型为checkbox时的选项值
             '开发' => array('value'=> 1), // 显示名=》value值，
             '测试' => array('value'=> 2, 'checked'=>true),    //checked为选中
-            '用户' => array('value'=> 3),
+            '用户' => array('value'=> 3, 'checked'=>true),
             '客服' => array('value'=> 4),
-            ),     
+            ),  
+        'validate' =>  array(   // js验证
+            'require' => true,      //不能为空
+        ),      
     ),
+ 
     array(
         'title' => '状态',
         'field' => 'status',
@@ -104,7 +114,12 @@ return [
         'option' => array(  // 类型为radio时的选项值
             '开启' => array('value'=> 1),
             '关闭' => array('value'=> 2, 'checked'=>true),    //checked为选中
-            ),        
+            ),   
+        'validate' =>  array(   // js验证
+            'require' => true,      //不能为空
+            'reg' => '/\d+/',  //按需自定义验证正则，默认 '!/\S+/'
+            'err' => '配置名不能空',  //验证不通过的提示， 默认 'title值+不能为空'
+        ),     
     ),
 
 

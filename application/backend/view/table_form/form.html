@@ -80,12 +80,16 @@
                 $(function () {
                     //初始化编辑框
                     editor_obj = editor = KindEditor.create('#textarea_{$vo.field}', {
+                        width: 700,
                         height: 400,
                         allowPreviewEmoticons: false,
                         allowImageUpload: true, //允许上传图片
                         allowFileManager: true, //允许对上传图片进行管理
                         urlType: 'domain',
-                        uploadJson: 'index.php?com=affiliate&t=uploadImag',                        
+                        imageSizeLimit: '2MB',  //多图上传大小限制
+                        imageUploadLimit: 10,   //多图上传数量限制
+                        uploadJson: '/backend/Common/kindUpload?filename=imgFile',                        
+                        fileManagerJson: '/static/backend/js/kindeditor/php/file_manager_json.php',
                         afterUpload: function() {
                             this.sync();
                         }, //图片上传后，将上传内容同步到textarea中
@@ -125,10 +129,11 @@
                     var uploadInst = upload.render({
                         elem: '#upload_{$vo.field}',        
                         url: '/backend/Common/uploadImg',
-                        data: {path: '{$vo.option.path}'},
-                        accept: 'file',
+                        data: {path: '{$vo.option.path}', filename: 'layuifile'},
+                        // accept: 'file',
                         exts: '{$vo.option.exts}',
-                        size: {$vo.option.size},                        
+                        size: {$vo.option.size},
+                        field: 'layuifile', // 文件域字段名, 与data中filename相同
                         done: function(res) {
                             if(res.status == 1){                                
                                 var id = this.elem[0].id;
@@ -189,18 +194,51 @@
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">                    
                     {volist name="vo.option" id="o"}
-                        <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if}>
+                        <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if} lay-skin="primary">
                     {/volist}                    
                 </div>
                 <div class="layui-form-mid layui-word-aux">
                     {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
                 </div>
             </div> 
-            {/case}            
+            {/case}   
+
+            {case value="date"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="{$vo.field}" name="{$vo.field}"  autocomplete="off" class="layui-input" value="{$info[$vo.field]|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            <script type="text/javascript">
+                layui.use('laydate', function(){
+                    var laydate = layui.laydate;
+                    //执行一个laydate实例
+                    laydate.render({
+                        elem: '#{$vo.field}', //指定元素
+                        type: '{$vo.option.type}',
+                        format: '{$vo.option.format}',
+                        value: '{$vo.option.value}',
+                        min: '{$vo.option.min}',
+                        max: '{$vo.option.max}'
+                    });
+                });
+            </script>
+            {/case}          
 
             {/switch}
+
+            {if $vo.validate}
+            <span id="reg_{$vo.field}" class="js-reg" field="{$vo.field}" type="{$vo.type}" reg="{$vo.validate.reg}" err="{$vo.validate.err}"></span>
+            {/if}
+
         {/volist}
-        
+        <span id='aaa' reg='\d+'></span>
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label">
             </label>
@@ -211,45 +249,44 @@
     </form>
 </div>
 <script>
-
-function ttt()
-{
-    alert(123)
-}
 layui.use(['form', 'layer'], function(){
     $ = layui.jquery;
     var form = layui.form,
     layer = layui.layer;    
-
     //监听提交
     form.on('submit(add)', function(data){ 
-        console.log(data.field);       
-        $.each(data.field, function(i, e){
-                  
+
+        var check = validateForm(data.field);                    
+        if(!check){
+            return false;
+        }
+        if(data.field.layuifile == ''){
+            // 上传图片控件中的字段名layuifile，这里去掉
+            delete data.field.layuifile;
+        }
+        $.ajax({
+            url: $(this).attr('url'),
+            type: "post",
+            data: data.field,
+            success:function(res){
+                if(res.status == 1){                    
+                    layer.alert("保存成功", {icon: 6},function () {                        
+                        var index = parent.layer.getFrameIndex(window.name);                        
+                        parent.layer.close(index);
+                        parent.location.reload();
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
         });
-            
-        
-        // $.ajax({
-        //     url: $(this).attr('url'),
-        //     type: "post",
-        //     data: data.field,
-        //     success:function(res){
-        //         if(res.status == 1){                    
-        //             layer.alert("保存成功", {icon: 6},function () {                        
-        //                 var index = parent.layer.getFrameIndex(window.name);                        
-        //                 parent.layer.close(index);
-        //                 parent.location.reload();
-        //             });
-        //         }else{
-        //             layer.msg(res.msg);
-        //         }
-        //     }
-        // });
         return false;
     });
 
 
 });
+
+
 </script>
 
 {/block}

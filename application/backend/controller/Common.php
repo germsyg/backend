@@ -33,4 +33,12 @@ class Common extends Backend
         $event = controller('common/Upload');
         return $event->uploadImg();        
     }
+
+    public function kindUpload()
+    {
+        header("Content-Type: application/json; charset=utf-8");                
+        $event = controller('common/Upload');
+        $res = $event->kindUpload();           
+        echo json_encode($res);die;
+    }
 }

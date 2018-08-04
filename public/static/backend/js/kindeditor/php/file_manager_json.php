@@ -13,9 +13,10 @@ $php_path = dirname(__FILE__) . '/';
 $php_url = dirname($_SERVER['PHP_SELF']) . '/';
 
 //根目录路径，可以指定绝对路径，比如 /var/www/attached/
-$root_path = $php_path . '../attached/';
+$root_path = dirname($php_path) . '/../../../../upload/kind/';
+
 //根目录URL，可以指定绝对路径，比如 http://www.yoursite.com/attached/
-$root_url = $php_url . '../attached/';
+$root_url = '/upload/kind/';
 //图片扩展名
 $ext_arr = array('gif', 'jpg', 'jpeg', 'png', 'bmp');
 
@@ -25,11 +26,13 @@ if (!in_array($dir_name, array('', 'image', 'flash', 'media', 'file'))) {
 	echo "Invalid Directory name.";
 	exit;
 }
+
+// echo $root_path;
 if ($dir_name !== '') {
 	$root_path .= $dir_name . "/";
 	$root_url .= $dir_name . "/";
-	if (!file_exists($root_path)) {
-		mkdir($root_path);
+	if (!file_exists($root_path)) {	
+		mkdir($root_path, 0777);
 	}
 }
 
@@ -45,7 +48,8 @@ if (empty($_GET['path'])) {
 	$current_dir_path = $_GET['path'];
 	$moveup_dir_path = preg_replace('/(.*?)[^\/]+\/$/', '$1', $current_dir_path);
 }
-//echo realpath($root_path);
+// echo $root_path;
+// echo realpath($root_path);
 //排序形式，name or size or type
 $order = empty($_GET['order']) ? 'name' : strtolower($_GET['order']);
 

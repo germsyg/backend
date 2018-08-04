@@ -7,7 +7,7 @@ use think\Request;
 
 class Example extends Backend
 {
-	public $table = 'config';
+	public $table = 'example';
 
 
     public function index()
@@ -22,7 +22,29 @@ class Example extends Backend
 
     public function save()
     {
-        $input = input('post.');
+        
+        $input = input('post.'); 
+        
+        $where = [];
+        foreach($input as $k=>$v){
+            if($k == 'id'){continue;}
+            if($k == 'img' || $k == 'type'){                       
+                $data[$k] = implode(',', $v);
+            }else{
+                $data[$k] = $v;            
+            }
+        }
+        unset($data['desc'], $data['longcontent2'], $data['file']);
+        if($input['id']){           
+            $where = array('id'=>$input['id']);                                
+        }
+
+        $res = $this->saveBE($this->table, $data, $where);        
+        if($res){
+            return $this->suc;
+        }else{
+            return $this->fai;
+        }
     }
 
     public function uploadImg()

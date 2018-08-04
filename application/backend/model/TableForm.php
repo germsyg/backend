@@ -421,9 +421,12 @@ class TableForm extends Backend
 				$v['validate'] = false;
 			}else{
 				if(!isset($v['validate']['reg'])){
-					$v['validate']['reg'] = '!/\S+/';
+					$v['validate']['reg'] = '\S+';
+				}else{
+					// 使用js正则对象，去边两边的/
+					$v['validate']['reg'] = trim($v['validate']['reg'], '/');
 				}
-				if(!isset($v['validate']['reg'])){
+				if(!isset($v['validate']['err'])){
 					$v['validate']['err'] = $v['title'].'不能为空';
 				}
 			}
@@ -450,6 +453,24 @@ class TableForm extends Backend
 				}
 				if(!isset($v['option']['num'])){
 					$v['option']['num'] = 1;
+				}
+			}
+
+			if($v['type'] == 'date'){
+				if(!isset($v['option']['type'])){
+					$v['option']['type'] = 'date';
+				}
+				if(!isset($v['option']['format'])){
+					$v['option']['format'] = 'yyyy-MM-dd';
+				}
+				if(!isset($v['option']['min'])){
+					$v['option']['min'] = '1900-01-01';
+				}
+				if(!isset($v['option']['max'])){
+					$v['option']['max'] = '3000-01-01';
+				}
+				if(!isset($v['option']['value'])){
+					$v['option']['value'] = '';
 				}
 			}
 		} 

@@ -206,5 +206,8 @@ function x_admin_close(){
     parent.layer.close(index);
 }
 
+function l(d){
+    console.log(d);
+}
 
 
