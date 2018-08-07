@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 
 /**
- * 表单格式器
+ * 表单格式器，适用于一般的表单填写，
  * title，显示的标题，用于提示输入内容， 必须有
  * field，保存数量时传到后台的字段名， 必须有
  * is_key，表单中的标识，一般对应数据库的主键， 必须且只有一个
@@ -59,7 +59,7 @@ return [
         'field' => 'add_time',
         'type' => 'date',        // 日期拾取器, 具体设置 http://www.layui.com/doc/modules/laydate.html
         'option' => array(
-            'type' => 'date',    // 选择器类型，默认date，date|year|month|time|datetime5种 
+            'type' => 'date',    // 选择器类型，默认date，date|year|month|time|datetime 5种 
             'format' => 'yyyy-MM-dd',  // 格式，默认yyyy-MM-dd, 参考layui日期选择器，
             'value' => '',  //初始值，默认空
             'min' => '',    // 日期范围，默认空， 最小1900-01-01
@@ -84,7 +84,7 @@ return [
         'option' => array(  // 类型为upload的配置值
             'ext' => array('jpg', 'jpeg'), //默认允许格式 'gif', 'jpg', 'jpeg', 'bmp', 'png', 'swf'
             'size' => 1024, //单位 k，默认3072
-            'path' => 'example', // 根目录 public/upload + 'path'
+            'path' => 'example', // 根目录 public/upload/ + 'path'
             'num' => 2, // 数量限制，默认1
             ),
         // 'validate' =>  array(   // js验证
@@ -113,7 +113,7 @@ return [
         'type' => 'radio',  
         'option' => array(  // 类型为radio时的选项值
             '开启' => array('value'=> 1),
-            '关闭' => array('value'=> 2, 'checked'=>true),    //checked为选中
+            '关闭' => array('value'=> 0, 'checked'=>true),    //checked为选中
             ),   
         'validate' =>  array(   // js验证
             'require' => true,      //不能为空

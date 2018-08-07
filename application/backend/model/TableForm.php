@@ -27,9 +27,14 @@ class TableForm extends Backend
 	// 查询筛选
 	protected $filter = '';
 
+	// 表单配置
 	protected $form_config;
 
+	// 表单字段文件
 	protected $form_field_file;
+
+	// 表单数据
+	protected $form_data = array();
 
 	protected function setFormFieldFile($file)
 	{
@@ -124,8 +129,8 @@ class TableForm extends Backend
 		foreach($where as $k=>$v){						
 			$db->where($v[0], $v[1], $v[2]);			
 		}	
-		// $list = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
-		// var_dump($list);die;
+		$res['data']['sql'] = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
+		
 		$list = $db->field($field)->fetchSql(false)->page($page, $limit)->select();		
 		if($this->list_callback){				
 			$list = call_user_func_array(array($this->list_callback['class'], $this->list_callback['func']), array($list));
@@ -371,7 +376,7 @@ class TableForm extends Backend
 	}
 
 	/**
-	 * 生成表格switch
+	 * 生成按钮switch
 	 * @author XZJ 2018-07-28T11:05:35+0800
 	 * @param  [type]  $text    [description]
 	 * @param  [type]  $value   [description]
@@ -390,6 +395,9 @@ class TableForm extends Backend
 		return $html;
 	}
 
+
+
+
 	/**
 	 * 公共表单页
 	 * @author XZJ 2018-07-24T16:34:24+0800
@@ -400,17 +408,22 @@ class TableForm extends Backend
 		$this->loadFormFieldFile();
 
 		$info['field'] = $this->parseFormField();
+		// var_dump($this->form_data);
 		// var_dump($info['field']);die;
-
-		$view = view('table_form/form');					
+		$info = array_merge($info, $this->form_data);
+		
+		$view = view('table_form/form');	
+		// var_dump($info);die;				
 		$view->assign('info', $info);
 		$view->send();
 	}
 
-	public function parseJsVerify()
+	protected function assignData($data)
 	{
-
+		$this->form_data = array_merge($this->form_data, $data);
 	}
+
+
 
 	public function parseFormField()
 	{
@@ -463,10 +476,10 @@ class TableForm extends Backend
 				if(!isset($v['option']['format'])){
 					$v['option']['format'] = 'yyyy-MM-dd';
 				}
-				if(!isset($v['option']['min'])){
+				if(!isset($v['option']['min']) || empty($v['option']['min'])){
 					$v['option']['min'] = '1900-01-01';
 				}
-				if(!isset($v['option']['max'])){
+				if(!isset($v['option']['max']) || empty($v['option']['max'])){
 					$v['option']['max'] = '3000-01-01';
 				}
 				if(!isset($v['option']['value'])){

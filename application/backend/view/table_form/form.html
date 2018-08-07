@@ -17,9 +17,10 @@
     <form class="layui-form">
         {volist name="info.field" id="vo"}
             {present name="vo.is_key"}
-                <input name="{$vo.field}" type="hidden" value="{$info[$vo.field]|default=''}">
+                <input name="{$vo.field}" type="hidden" value="{$info['data'][$vo.field]|default=''}">
                 {php}continue;{/php}    
             {/present}
+
             {switch name="vo.type"}
 
             {case value="text"}
@@ -28,10 +29,10 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info[$vo.field]|default=''}">
+                    <input type="text" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
                 </div>
                 <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>&nbsp;&nbsp;{$vo.tip|default=''}
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
                 </div>
             </div>        
             {/case}
@@ -42,10 +43,10 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline">
-                    <input type="password" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info[$vo.field]|default=''}">
+                    <input type="password" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
                 </div>
                 <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>&nbsp;&nbsp;{$vo.tip|default=''}
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
                 </div>
             </div>        
             {/case}
@@ -56,7 +57,7 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">
-                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if}>{$info[$vo.field]|default=''}</textarea>
+                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if}>{$info['data'][$vo.field]|default=''}</textarea>
                 </div>
                 <div class="layui-form-mid layui-word-aux">
                     {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
@@ -70,7 +71,7 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">
-                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if} id="textarea_{$vo.field}">{$info[$vo.field]|default=''}</textarea>
+                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if} id="textarea_{$vo.field}">{$info['data'][$vo.field]|default=''}</textarea>
                 </div>
                 <div class="layui-form-mid layui-word-aux">
                     {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
@@ -87,7 +88,7 @@
                         allowFileManager: true, //允许对上传图片进行管理
                         urlType: 'domain',
                         imageSizeLimit: '2MB',  //多图上传大小限制
-                        imageUploadLimit: 10,   //多图上传数量限制
+                        imageUploadLimit: 10,   //多图同时上传数量限制
                         uploadJson: '/backend/Common/kindUpload?filename=imgFile',                        
                         fileManagerJson: '/static/backend/js/kindeditor/php/file_manager_json.php',
                         afterUpload: function() {
@@ -97,9 +98,6 @@
                             this.sync();
                         }
                     });
-                    /*var reviews_content = $("#reviews_content").html();
-                    editor_obj.val(reviews_content);*/
-
                 })
             </script>
             {/case} 
@@ -116,6 +114,15 @@
                     <div class="upload_box">                        
                         <ul>
                             <!-- <li><i class="layui-icon js-del-img">&#xe640;</i><span><img src="/upload/tt.jpg" ></span><input type="hidden" name="{$vo.field}[]" value="lkhj"></li> -->
+                            <!-- 对于图片，格式化成 url => /upload/xxx.jpg  value => xxx.jpg -->
+                            {if isset($info['data'][$vo.field])}
+                                {volist name="info['data'][$vo.field]" id='img'}
+                                <li>                                    
+                                    <i class="layui-icon js-del-img">&#xe640;</i><span><img src="{$img.url}" ></span>
+                                    <input type="hidden" name="{$vo.field}[]" value="{$img.value}">
+                                </li>
+                                {/volist}
+                            {/if}
                         </ul>
                     </div>
                 </div>
@@ -130,7 +137,6 @@
                         elem: '#upload_{$vo.field}',        
                         url: '/backend/Common/uploadImg',
                         data: {path: '{$vo.option.path}', filename: 'layuifile'},
-                        // accept: 'file',
                         exts: '{$vo.option.exts}',
                         size: {$vo.option.size},
                         field: 'layuifile', // 文件域字段名, 与data中filename相同
@@ -149,6 +155,7 @@
                         }
                     });
                 });
+                checkBtn('upload_{$vo.field}');
             </script>
             {/case}  
 
@@ -161,7 +168,11 @@
                     <select name="{$vo.field}" {if $vo.validate}lay-verify="required"{/if}>
                         <option value="">请选择{$vo.title}</option>
                     {volist name="vo.option" id="o"}
-                        <option value="{$o.value}" {if $o.checked}selected{/if}>{$key}</option>                        
+                        {if isset($info['data'][$vo.field])}
+                        <option value="{$o.value}" {if $o.value == $info['data'][$vo.field]}selected{/if}>{$key}</option>
+                        {else/}
+                        <option value="{$o.value}" {if $o.checked}selected{/if}>{$key}</option>
+                        {/if}
                     {/volist}
                     </select>     
                 </div>
@@ -178,7 +189,12 @@
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">                    
                     {volist name="vo.option" id="o"}
+                        {if isset($info['data'][$vo.field])}
+                            <input type="radio" name="{$vo.field}" value="{$o.value}" title="{$key}" {if $o.value == $info['data'][$vo.field]}checked="checked"{/if}>
+                        {else/}
                         <input type="radio" name="{$vo.field}" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if}>
+                        {/if}
+                        
                     {/volist}                    
                 </div>
                 <div class="layui-form-mid layui-word-aux">
@@ -194,7 +210,11 @@
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">                    
                     {volist name="vo.option" id="o"}
-                        <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if} lay-skin="primary">
+                        {if isset($info['data'][$vo.field])}
+                            <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if in_array($o.value, $info['data'][$vo.field])}checked="checked"{/if} lay-skin="primary">
+                        {else/}
+                            <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if} lay-skin="primary">
+                        {/if}
                     {/volist}                    
                 </div>
                 <div class="layui-form-mid layui-word-aux">
@@ -209,10 +229,10 @@
                     {$vo.title}: 
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="{$vo.field}" name="{$vo.field}"  autocomplete="off" class="layui-input" value="{$info[$vo.field]|default=''}">
+                    <input type="text" id="{$vo.field}" name="{$vo.field}"  autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
                 </div>
                 <div class="layui-form-mid layui-word-aux">
-                    <span class="x-red">*</span>&nbsp;&nbsp;{$vo.tip|default=''}
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
                 </div>
             </div> 
             <script type="text/javascript">
@@ -223,7 +243,7 @@
                         elem: '#{$vo.field}', //指定元素
                         type: '{$vo.option.type}',
                         format: '{$vo.option.format}',
-                        value: '{$vo.option.value}',
+                        value: '{$info['data'][$vo.field]|default=$vo.option.value}',
                         min: '{$vo.option.min}',
                         max: '{$vo.option.max}'
                     });
@@ -237,8 +257,7 @@
             <span id="reg_{$vo.field}" class="js-reg" field="{$vo.field}" type="{$vo.type}" reg="{$vo.validate.reg}" err="{$vo.validate.err}"></span>
             {/if}
 
-        {/volist}
-        <span id='aaa' reg='\d+'></span>
+        {/volist}        
         <div class="layui-form-item">
             <label for="L_repass" class="layui-form-label">
             </label>

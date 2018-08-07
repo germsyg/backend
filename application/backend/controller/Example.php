@@ -12,17 +12,22 @@ class Example extends Backend
 
     public function index()
     {                    
-        model('example')->index();
+        model($this->table)->index();
     }    
 
     public function add()
     {
-        model('example')->add();
+        model($this->table)->add();
+    }
+
+    public function edit()
+    {        
+        $id = input('param.id', 0);
+        model($this->table)->add((int)$id);
     }
 
     public function save()
-    {
-        
+    {        
         $input = input('post.'); 
         
         $where = [];
@@ -30,28 +35,22 @@ class Example extends Backend
             if($k == 'id'){continue;}
             if($k == 'img' || $k == 'type'){                       
                 $data[$k] = implode(',', $v);
+            }else if($k == 'add_time'){
+                $data[$k] = strtotime($v);
             }else{
                 $data[$k] = $v;            
             }
-        }
-        unset($data['desc'], $data['longcontent2'], $data['file']);
+        }        
         if($input['id']){           
             $where = array('id'=>$input['id']);                                
         }
-
+// var_dump($data);die;
         $res = $this->saveBE($this->table, $data, $where);        
         if($res){
             return $this->suc;
         }else{
             return $this->fai;
         }
-    }
-
-    public function uploadImg()
-    {
-        $event = controller('common/Upload');
-        $res = $event->uploadImg();
-        return $res;
     }
 
 }
