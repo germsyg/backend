@@ -2,6 +2,8 @@
 namespace app\backend\model;
 use think\Model;
 use think\View;
+use think\Cookie;
+use think\Config;
 
 
 class TableForm extends Backend
@@ -119,23 +121,39 @@ class TableForm extends Backend
 	protected function table()
 	{
 		$page = input('post.page', 1);
-		$limit = input('post.limit', 10);
+		// 默认每页显示条目
+		$limit = input('post.limit', 0);
+		if($limit){
+			Cookie::set('list_limit', $limit);
+		}else{
+			$limit = Cookie::get('list_limit');
+			if(!$limit){
+				$limit = Config::get('table.limit');
+				Cookie::set('list_limit', $limit);	
+			}
+		}
+
+		// 加载字段配置文件
 		$this->loadFieldFile();
 
 		$db = db($this->table);
+		// 解析字段
 		$field = $this->parseField();			
+		// 解析搜索where
 		$where = $this->parseWhere();
-						// var_dump($where);
+		// var_dump($where);
 		foreach($where as $k=>$v){						
 			$db->where($v[0], $v[1], $v[2]);			
 		}	
 		$res['data']['sql'] = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
-		
+		// 执行sql后，需要重新赋值where		
+		foreach($where as $k=>$v){						
+			$db->where($v[0], $v[1], $v[2]);			
+		}	
 		$list = $db->field($field)->fetchSql(false)->page($page, $limit)->select();		
 		if($this->list_callback){				
 			$list = call_user_func_array(array($this->list_callback['class'], $this->list_callback['func']), array($list));
 		}		
-		// 执行sql后，需要重新赋值where
 		foreach($where as $k=>$v){						
 			$db->where($v[0], $v[1], $v[2]);			
 		}

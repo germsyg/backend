@@ -50,7 +50,7 @@
     </div>
     <xblock>
         <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button> -->
-        <button class="layui-btn" onclick="x_admin_show('添加用户','{:url('Admin/add')}')"><i class="layui-icon"></i>添加</button>
+        <button class="layui-btn" onclick="x_admin_show('添加','{:url('add')}')"><i class="layui-icon"></i>添加</button>
         <span class="x-right" style="line-height:40px">共有数据：{$info.count} 条</span>
     </xblock>
     <table class="layui-table layui-form">
@@ -91,7 +91,6 @@
         form = layui.form
         laydate = layui.laydate;
                 
-
         initJs();        
         function initJs(){            
             // 初始化法分页
@@ -151,7 +150,7 @@
             form.render(); 
         }
 
-        
+        // 列表中switch 开关点击
         form.on('switch(status)', function(data){
             l(data);
             // load层
@@ -185,8 +184,8 @@
                     }
                 }
             });                     
-
         });  
+
     });
 </script>
 

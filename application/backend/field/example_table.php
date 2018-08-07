@@ -14,7 +14,7 @@
  * title，显示的th名
  * field，查询数据库字段
  * is_key，标记为主键，用于隐藏作用域
- * is_search，搜索， type 类型有 text|
+ * is_search，搜索， type 类型有 text|date|select|checkbox
  */
 return [
     array(
@@ -47,35 +47,34 @@ return [
         'title' =>'时间',
         'field' => 'add_time',
         'is_search' => array(
-            'type' => 'date',   //搜索类型                                
-            'is_unix_time' => false, // 将时间转为时间戳
+            'type' => 'date',   //搜索类型 sql 会组装成 add_time > start and add_time < end
+            'is_unix_time' => true, // 将时间转为时间戳
         ),
     ),
     array(
         'title' => '地区',
         'field' => 'area',
-
     ),
 
     array(
         'title' => '类型',
         'field' => 'type',
-        'is_search' => array(            
-            'type' => 'checkbox',
-            'option' => array(
-                '开发' => array('value'=> 1), // 显示名=》value值，
-                '测试' => array('value'=> 2),    //checked为选中
-                '用户' => array('value'=> 3),
-                '客服' => array('value'=> 4),
-                ),
-            ), 
+        // 'is_search' => array(            
+        //     'type' => 'checkbox',   // sql 会组装成 type in(1, 2, 3 , 4)
+        //     'option' => array(
+        //         '开发' => array('value'=> 1), // 显示名=》value值，
+        //         '测试' => array('value'=> 2),    //checked为选中
+        //         '用户' => array('value'=> 3),
+        //         '客服' => array('value'=> 4),
+        //         ),
+        //     ), 
     ),
 
     array(
         'title' => '状态',
         'field' => 'status',
         'is_search' => array(            
-            'type' => 'select',
+            'type' => 'select', // sql 会组装成 type = 1
             'option' => array(
                 '正常' => 1,
                 '禁用' => 2,
