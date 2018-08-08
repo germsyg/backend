@@ -26,8 +26,16 @@ return [
         'validate' =>  array(
             'require' => true,            
             'err' => '配置名不能空',
+            ),        
+    ),
+    array(
+        'title' => '配置标识',
+        'field' => 'tag',
+        'type' => 'text',
+        'validate' =>  array(
+            'require' => true,                        
             ),
-        'tip' => '配置',
+        'tip' => '用于数据读取。数组的key',
     ),
     array(
         'title' => '配置描述',

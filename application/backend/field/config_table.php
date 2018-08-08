@@ -33,10 +33,6 @@ return [
         'field' => 'tag',       
     ),
     array(
-        'title' => '修改时间',
-        'field' => 'modify_time',        
-    ),
-    array(
         'title' => '状态',
         'field' => 'status',
         'is_search' => array(            

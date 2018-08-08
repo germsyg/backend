@@ -22,7 +22,7 @@ class Xconfig extends Backend
 
     public function edit()
     {
-        $id = input('post.id', 0);
+        $id = input('param.id', 0);
         model('xconfig')->add($id);
     }
 
