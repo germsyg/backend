@@ -1,0 +1,193 @@
+{extend name="common/base" /}
+{block name="content"}
+<div class="x-nav">
+    <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">&#xe9aa;</i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        {notempty name="info.search"}
+        <form class="layui-form  x-so" id="search_form">
+            {volist name="info.search" id="vo"}
+                {switch name="vo.type"}
+                    {case value='text'}
+                        <input type="text" name="{$vo.field}" placeholder="{$vo.title}" autocomplete="off" class="layui-input">
+                    {/case}
+                    {case value='date'}
+                        {$vo.title}:
+                        <input class="layui-input search_date" placeholder="start" name="{$vo.start.field}" id="{$vo.start.field}">
+                        <input class="layui-input search_date" placeholder="end" name="{$vo.end.field}" id="{$vo.end.field}">
+                    {/case}
+                    {case value="select"}
+                        <div class="layui-input-inline">
+                            <select name="{$vo.field}" lay-verify="" >
+                                <option value="">{$vo.title}</option>
+                                {volist name="vo.option" id="o"}
+                                <option value="{$o.value}">{$o.key}</option>
+                                {/volist}                                            
+                            </select>  
+                        </div> 
+                    {/case}
+                    {case value="checkbox"}
+                        {$vo.title}:
+                        <div class="layui-input-inline">
+                            {volist name="vo.option" id="o"}
+                            <input type="checkbox" name="{$vo.field}[]" title="{$o.key}" lay-skin="primary" value='{$o.value}' {if $o.checked}checked="checked">{/if}
+                            {/volist}                                            
+                        </div> 
+                    {/case}
+                {/switch}
+                &nbsp;&nbsp;
+            {/volist}            
+            <span class="layui-btn search_btn" ><i class="layui-icon">&#xe615;</i></span>
+        </form>
+        {/notempty}
+    </div>
+    <xblock>
+        <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button> -->
+        <button class="layui-btn" onclick="x_admin_show('添加','{:url('add')}')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$info.count} 条</span>
+    </xblock>
+    <table class="layui-table layui-form">
+        <thead>
+            <tr>
+            {volist name="info.config" id="vo"}
+                {if isset($vo.is_key) && $vo.is_key}
+                <th width="40">
+                    <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+                </th>                        
+                {/if}
+                <th>{$vo.title}</th>
+                {/volist}                
+        </thead>
+        <tbody id="tr" lay-filter="tr">
+            {volist name="info.list" id="vo"}
+            <tr>
+                {volist name="info.config" id="c"}
+                {if isset($c.is_key) && $c.is_key}
+                <td>
+                    <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$vo[$c.field]}'><i class="layui-icon">&#xe605;</i></div>
+                </td>
+                <input type="hidden" name="{$c.field}" class="js-key-id" value="{$vo[$c.field]}">
+                {/if}
+                <td>{$vo[$c.field]}</td>
+                {/volist}
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+    <div id="page" style="text-align: center;"></div>
+</div>
+<script>
+    var search_data;
+    layui.use(['form','laypage', 'layer', 'laydate'], function () {
+        var laypage = layui.laypage,
+        layer = layui.layer,
+        form = layui.form
+        laydate = layui.laydate;
+                
+        initJs();        
+        function initJs(){            
+            // 初始化法分页
+            initPage({$info.count}, {$info.limit});    
+            // 初始化日期选择器
+            initDatePick();
+        }
+        
+        function initDatePick(){            
+            var date = $('.search_date');
+            date.each(function(){
+                laydate.render({
+                  elem: '#'+$(this).attr('id')
+                });
+            })                
+            
+        }
+        
+        $('.search_btn').click(function(){
+            var data = $('#search_form').serialize();            
+            $.ajax({
+                url: "",
+                type: "post",
+                dataType: 'json',                
+                data: data,
+                success:function(res){
+                    $('#tr').html(res.data.html);
+                    initPage(res.data.count, res.data.limit)                    
+                }
+            });              
+        })
+
+        // 初始化分页
+        function initPage(count, limit){
+            var data = $('#search_form').serialize();
+            laypage.render({
+                elem: 'page',
+                count: count,
+                limit: limit,
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                jump: function(obj, first) {                   
+                    if (!first) {
+                        $.ajax({
+                            url: "",
+                            type: "post",
+                            dataType: 'json',                
+                            data: data+'&page='+obj.curr+'&limit='+obj.limit,
+                            success:function(res){
+                                $('#tr').html(res.data.html);
+                                form.render();
+                            }
+                        });
+                    }
+                }
+            });
+            // 渲染表格内容
+            form.render(); 
+        }
+
+        // 列表中switch 开关点击
+        form.on('switch(status)', function(data){
+            l(data);
+            // load层
+            var i= layer.load(2);
+            // 数据id
+            var id = $(this).closest('tr').find('.js-key-id').val();
+            var obj = $(data.elem);
+            // 当前按钮状态
+            var ori_status = data.value;
+            // 开关原状态
+            var ori_checked = !data.elem.checked;
+
+            // switch 状态只针对1启用，0关闭，不用于其他的状态
+            var status = 1;            
+            if(ori_status == 1){
+                status = 0;
+            }
+            $.ajax({
+                url: "{:url('save')}",
+                type: "post",
+                data: {id:id, status:status},
+                success:function(res){
+                    layer.close(i); 
+                    if(res.status == 1){        
+                        obj.val(status);            
+                        layer.msg(res.msg);  
+                    }else{                 
+                        layer.msg(res.msg);  
+                        obj.prop('checked', ori_checked);                
+                        form.render('checkbox');                      
+                    }
+                }
+            });                     
+        });  
+
+    });
+</script>
+
+{/block}

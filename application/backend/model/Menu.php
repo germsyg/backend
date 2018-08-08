@@ -9,10 +9,4 @@ class Menu extends Backend
 {
 	public $table = 'menu';
 
-    public function ttt()
-    {
-        $u = Menu::get(1);
-        return $u;
-    }
-
 }

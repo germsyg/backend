@@ -66,3 +66,30 @@ function randomString($length = 6) {
 	} 
 	return $randomString; 
 }
+
+/**
+ * 二维数组按某字段排序， 无该字段的排到最后
+ * @author XZJ 2018-07-27T14:45:21+0800
+ * @param  [type] &$array [description]
+ * @param  [type] $key    [description]
+ * @param  string $sort   [description]
+ * @return [type]         [description]
+ */
+function arraySort(&$array, $key, $sort='desc'){
+	$a1 = $a2 = $s = array();
+	foreach($array as $k=>$v){
+		if(isset($v[$key])){
+			$a1[] = $v;
+			$s[] = $v[$key];
+		}else{
+			$a2[] = $v;
+		}
+	}
+	if($sort == 'desc'){
+		$sort = SORT_DESC;
+	}else{
+		$sort = SORT_ASC;
+	}
+	array_multisort($s, $sort, $a1);
+	$array = array_merge($a1, $a2);			
+}

@@ -93,7 +93,7 @@
                 status = 0;
             }       
             $.ajax({
-                url: "{:url('Admin/modify')}",
+                url: "{:url('Admin/save')}",
                 type: "post",
                 data: {id:id, status:status},
                 success:function(res){

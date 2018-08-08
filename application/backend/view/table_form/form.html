@@ -1,0 +1,311 @@
+{extend name="common/base" /}
+{block name="header"}
+<link rel="stylesheet" href="/static/backend/css/font.css">
+<script language="javascript" src="/static/backend/js/form.js"></script>
+<script language="javascript" src="/static/backend/js/kindeditor/kindeditor-min.js"></script>
+<!-- <script language="javascript" src="/static/commom/js/kindeditor/lang/en.js"></script> -->
+<style type="text/css">
+    .upload_box {margin-top: 5px;}
+    .upload_box li{float: left;width: 150px; height: 150px; border: 1px solid #ded4d4; margin-right: 5px; position: relative;}
+    .upload_box li span{height: 150px; line-height: 150px; text-align: center; display: block;}
+    .upload_box li img{max-width: 148px; max-height: 148px;vertical-align: middle;}
+    .upload_box li i{left: 135px; top: -10px; position: absolute; font-size: 24px; color: #8e3f3f; cursor:pointer;}
+</style>
+{/block}
+{block name="content"}
+<div class="x-body">
+    <form class="layui-form">
+        {volist name="info.field" id="vo"}
+            {present name="vo.is_key"}
+                <input name="{$vo.field}" type="hidden" value="{$info['data'][$vo.field]|default=''}">
+                {php}continue;{/php}    
+            {/present}
+
+            {switch name="vo.type"}
+
+            {case value="text"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div>        
+            {/case}
+
+            {case value="password"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div>        
+            {/case}
+
+            {case value="textarea"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 500px;">
+                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if}>{$info['data'][$vo.field]|default=''}</textarea>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            {/case}   
+
+            {case value="editor"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 500px;">
+                    <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if} id="textarea_{$vo.field}">{$info['data'][$vo.field]|default=''}</textarea>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            <script type="text/javascript">
+                $(function () {
+                    //初始化编辑框
+                    editor_obj = editor = KindEditor.create('#textarea_{$vo.field}', {
+                        width: 700,
+                        height: 400,
+                        allowPreviewEmoticons: false,
+                        allowImageUpload: true, //允许上传图片
+                        allowFileManager: true, //允许对上传图片进行管理
+                        urlType: 'domain',
+                        imageSizeLimit: '2MB',  //多图上传大小限制
+                        imageUploadLimit: 10,   //多图同时上传数量限制
+                        uploadJson: '/backend/Common/kindUpload?filename=imgFile',                        
+                        fileManagerJson: '/static/backend/js/kindeditor/php/file_manager_json.php',
+                        afterUpload: function() {
+                            this.sync();
+                        }, //图片上传后，将上传内容同步到textarea中
+                        afterBlur: function() {
+                            this.sync();
+                        }
+                    });
+                })
+            </script>
+            {/case} 
+
+            {case value="upload"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 800px;">
+                    <button type="button" class="layui-btn js-upload-btn" id="upload_{$vo.field}" num="{$vo.option.num}" title="数量限制 {$vo.option.num}">
+                        <i class="layui-icon">&#xe67c;</i>上传{$vo.title}
+                    </button>
+                    <div class="upload_box">                        
+                        <ul>
+                            <!-- <li><i class="layui-icon js-del-img">&#xe640;</i><span><img src="/upload/tt.jpg" ></span><input type="hidden" name="{$vo.field}[]" value="lkhj"></li> -->
+                            <!-- 对于图片，格式化成 url => /upload/xxx.jpg  value => xxx.jpg -->
+                            {if isset($info['data'][$vo.field])}
+                                {volist name="info['data'][$vo.field]" id='img'}
+                                <li>                                    
+                                    <i class="layui-icon js-del-img">&#xe640;</i><span><img src="{$img.url}" ></span>
+                                    <input type="hidden" name="{$vo.field}[]" value="{$img.value}">
+                                </li>
+                                {/volist}
+                            {/if}
+                        </ul>
+                    </div>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            <script type="text/javascript">
+                layui.use(['upload'], function(){
+                    upload = layui.upload;
+                    var uploadInst = upload.render({
+                        elem: '#upload_{$vo.field}',        
+                        url: '/backend/Common/uploadImg',
+                        data: {path: '{$vo.option.path}', filename: 'layuifile'},
+                        exts: '{$vo.option.exts}',
+                        size: {$vo.option.size},
+                        field: 'layuifile', // 文件域字段名, 与data中filename相同
+                        done: function(res) {
+                            if(res.status == 1){                                
+                                var id = this.elem[0].id;
+                                var box = $('#'+id).closest('.layui-form-item').find('.upload_box > ul');
+                                box.append('<li><i class="layui-icon js-del-img">&#xe640;</i><span><img src="/upload/'+res.data.saveName+'" ></span><input type="hidden" name="{$vo.field}[]" value="'+res.data.saveName+'"></li>');               
+                                checkBtn(id);
+                            }else{
+                                layer.msg('上传失败，稍后再试');
+                            }
+                        },
+                        error: function(res) {
+                            layer.msg('上传失败，稍后再试');
+                        }
+                    });
+                });
+                checkBtn('upload_{$vo.field}');
+            </script>
+            {/case}  
+
+            {case value="select"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" >
+                    <select name="{$vo.field}" {if $vo.validate}lay-verify="required"{/if}>
+                        <option value="">请选择{$vo.title}</option>
+                    {volist name="vo.option" id="o"}
+                        {if isset($info['data'][$vo.field])}
+                        <option value="{$o.value}" {if $o.value == $info['data'][$vo.field]}selected{/if}>{$key}</option>
+                        {else/}
+                        <option value="{$o.value}" {if $o.checked}selected{/if}>{$key}</option>
+                        {/if}
+                    {/volist}
+                    </select>     
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            {/case} 
+
+            {case value="radio"}
+            <div class="layui-form-item" >
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 500px;">                    
+                    {volist name="vo.option" id="o"}
+                        {if isset($info['data'][$vo.field])}
+                            <input type="radio" name="{$vo.field}" value="{$o.value}" title="{$key}" {if $o.value == $info['data'][$vo.field]}checked="checked"{/if}>
+                        {else/}
+                        <input type="radio" name="{$vo.field}" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if}>
+                        {/if}
+                        
+                    {/volist}                    
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            {/case}   
+
+            {case value="checkbox"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline" style="width: 500px;">                    
+                    {volist name="vo.option" id="o"}
+                        {if isset($info['data'][$vo.field])}
+                            <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if in_array($o.value, $info['data'][$vo.field])}checked="checked"{/if} lay-skin="primary">
+                        {else/}
+                            <input type="checkbox" name="{$vo.field}[]" value="{$o.value}" title="{$key}" {if $o.checked}checked="checked"{/if} lay-skin="primary">
+                        {/if}
+                    {/volist}                    
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            {/case}   
+
+            {case value="date"}
+            <div class="layui-form-item">
+                <label for="{$vo.field}" class="layui-form-label">
+                    {$vo.title}: 
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="{$vo.field}" name="{$vo.field}"  autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    {if $vo.validate}<span class="x-red">*</span>{/if}&nbsp;&nbsp;{$vo.tip|default=''}
+                </div>
+            </div> 
+            <script type="text/javascript">
+                layui.use('laydate', function(){
+                    var laydate = layui.laydate;
+                    //执行一个laydate实例
+                    laydate.render({
+                        elem: '#{$vo.field}', //指定元素
+                        type: '{$vo.option.type}',
+                        format: '{$vo.option.format}',
+                        value: '{$info['data'][$vo.field]|default=$vo.option.value}',
+                        min: '{$vo.option.min}',
+                        max: '{$vo.option.max}'
+                    });
+                });
+            </script>
+            {/case}          
+
+            {/switch}
+
+            {if $vo.validate}
+            <span id="reg_{$vo.field}" class="js-reg" field="{$vo.field}" type="{$vo.type}" reg="{$vo.validate.reg}" err="{$vo.validate.err}"></span>
+            {/if}
+
+        {/volist}        
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" url="{:url('save', '', '')}">
+                保存
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+layui.use(['form', 'layer'], function(){
+    $ = layui.jquery;
+    var form = layui.form,
+    layer = layui.layer;    
+    //监听提交
+    form.on('submit(add)', function(data){ 
+
+        var check = validateForm(data.field);                    
+        if(!check){
+            return false;
+        }
+        if(data.field.layuifile == ''){
+            // 上传图片控件中的字段名layuifile，这里去掉
+            delete data.field.layuifile;
+        }
+        $.ajax({
+            url: $(this).attr('url'),
+            type: "post",
+            data: data.field,
+            success:function(res){
+                if(res.status == 1){                    
+                    layer.alert("保存成功", {icon: 6},function () {                        
+                        var index = parent.layer.getFrameIndex(window.name);                        
+                        parent.layer.close(index);
+                        parent.location.reload();
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        });
+        return false;
+    });
+
+
+});
+
+
+</script>
+
+{/block}

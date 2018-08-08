@@ -1,9 +1,11 @@
+
 $(function () {
     //加载弹出层
-    layui.use(['form','element'],
+    layui.use(['form', 'element', 'layer', 'upload'],
     function() {
         layer = layui.layer;
-        element = layui.element;
+        element = layui.element,
+        upload = layui.upload;
     });
 
     //触发事件
@@ -153,7 +155,7 @@ $(function () {
         $(this).closest('.tip-layer').find('.tip').hide();
     });
     
-})
+});
 var cateIds = [];
 function getCateId(cateId) {
     
@@ -204,5 +206,8 @@ function x_admin_close(){
     parent.layer.close(index);
 }
 
+function l(d){
+    console.log(d);
+}
 
 
