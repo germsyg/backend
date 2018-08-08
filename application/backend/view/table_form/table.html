@@ -35,6 +35,7 @@
                         </div> 
                     {/case}
                     {case value="checkbox"}
+                        {$vo.title}:
                         <div class="layui-input-inline">
                             {volist name="vo.option" id="o"}
                             <input type="checkbox" name="{$vo.field}[]" title="{$o.key}" lay-skin="primary" value='{$o.value}' {if $o.checked}checked="checked">{/if}

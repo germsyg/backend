@@ -59,15 +59,20 @@ return [
     array(
         'title' => '类型',
         'field' => 'type',
-        // 'is_search' => array(            
-        //     'type' => 'checkbox',   // sql 会组装成 type in(1, 2, 3 , 4)
-        //     'option' => array(
-        //         '开发' => array('value'=> 1), // 显示名=》value值，
-        //         '测试' => array('value'=> 2),    //checked为选中
-        //         '用户' => array('value'=> 3),
-        //         '客服' => array('value'=> 4),
-        //         ),
-        //     ), 
+    ),
+
+    array(
+        'title' => '站点',
+        'field' => 'site',
+        'is_search' => array(            
+            'type' => 'checkbox',   // sql 会组装成 type in(1, 2, 3, 4)
+            'option' => array(
+                'pc' => array('value'=> 1), // 显示名=》value值，
+                'm' => array('value'=> 2),    //checked为选中
+                'ios' => array('value'=> 3),
+                'android' => array('value'=> 4),
+                ),
+            ), 
     ),
 
     array(

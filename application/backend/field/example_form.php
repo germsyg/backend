@@ -106,6 +106,21 @@ return [
             'require' => true,      //不能为空
         ),      
     ),
+
+    array(
+        'title' => '站点',
+        'field' => 'site',
+        'type' => 'radio',   
+        'option' => array(  // 类型为checkbox时的选项值
+            'pc' => array('value'=> 1, 'checked'=>true), // 显示名=》value值，
+            'm' => array('value'=> 2),    //checked为选中
+            'ios' => array('value'=> 3),
+            'android' => array('value'=> 4),
+            ),  
+        'validate' =>  array(   // js验证
+            'require' => true,      //不能为空
+        ),      
+    ),
  
     array(
         'title' => '状态',
