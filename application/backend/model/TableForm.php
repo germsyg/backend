@@ -2,6 +2,8 @@
 namespace app\backend\model;
 use think\Model;
 use think\View;
+use think\Cookie;
+use think\Config;
 
 
 class TableForm extends Backend
@@ -27,7 +29,24 @@ class TableForm extends Backend
 	// 查询筛选
 	protected $filter = '';
 
+	// 表单配置
+	protected $form_config;
 
+	// 表单字段文件
+	protected $form_field_file;
+
+	// 表单数据
+	protected $form_data = array();
+
+	protected function setFormFieldFile($file)
+	{
+		$this->form_field_file = $file;
+	}
+
+	protected function setFormConfig($config)
+	{
+		$this->form_config = $config;
+	}
 
 	/**
 	 * 设置查询的主表
@@ -102,23 +121,39 @@ class TableForm extends Backend
 	protected function table()
 	{
 		$page = input('post.page', 1);
-		$limit = input('post.limit', 10);
+		// 默认每页显示条目
+		$limit = input('post.limit', 0);
+		if($limit){
+			Cookie::set('list_limit', $limit);
+		}else{
+			$limit = Cookie::get('list_limit');
+			if(!$limit){
+				$limit = Config::get('table.limit');
+				Cookie::set('list_limit', $limit);	
+			}
+		}
+
+		// 加载字段配置文件
 		$this->loadFieldFile();
 
 		$db = db($this->table);
+		// 解析字段
 		$field = $this->parseField();			
+		// 解析搜索where
 		$where = $this->parseWhere();
-						// var_dump($where);
+		// var_dump($where);
 		foreach($where as $k=>$v){						
 			$db->where($v[0], $v[1], $v[2]);			
 		}	
-		// $list = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
-		// var_dump($list);die;
+		$res['data']['sql'] = $db->field($field)->fetchSql(true)->page($page, $limit)->select();		
+		// 执行sql后，需要重新赋值where		
+		foreach($where as $k=>$v){						
+			$db->where($v[0], $v[1], $v[2]);			
+		}	
 		$list = $db->field($field)->fetchSql(false)->page($page, $limit)->select();		
 		if($this->list_callback){				
 			$list = call_user_func_array(array($this->list_callback['class'], $this->list_callback['func']), array($list));
 		}		
-		// 执行sql后，需要重新赋值where
 		foreach($where as $k=>$v){						
 			$db->where($v[0], $v[1], $v[2]);			
 		}
@@ -217,7 +252,9 @@ class TableForm extends Backend
 				$search[] = $data;
 			}
 		}		
-		arraySort($search, 'sort', 'asc');
+		if(empty($search)){
+			arraySort($search, 'sort', 'asc');
+		}
 		if($this->search_callback){				
 			$where = call_user_func_array(array($this->search_callback['class'], $this->search_callback['func']), array($search));
 		}		
@@ -357,7 +394,7 @@ class TableForm extends Backend
 	}
 
 	/**
-	 * 生成表格switch
+	 * 生成按钮switch
 	 * @author XZJ 2018-07-28T11:05:35+0800
 	 * @param  [type]  $text    [description]
 	 * @param  [type]  $value   [description]
@@ -376,6 +413,9 @@ class TableForm extends Backend
 		return $html;
 	}
 
+
+
+
 	/**
 	 * 公共表单页
 	 * @author XZJ 2018-07-24T16:34:24+0800
@@ -383,6 +423,104 @@ class TableForm extends Backend
 	 */
 	protected function form()
 	{
+		$this->loadFormFieldFile();
 
+		$info['field'] = $this->parseFormField();
+		// var_dump($this->form_data);
+		// var_dump($info['field']);die;
+		$info = array_merge($info, $this->form_data);
+		
+		$view = view('table_form/form');	
+		// var_dump($info);die;				
+		$view->assign('info', $info);
+		$view->send();
 	}
+
+	protected function assignData($data)
+	{
+		$this->form_data = array_merge($this->form_data, $data);
+	}
+
+
+
+	public function parseFormField()
+	{
+		$config = $this->form_config;
+		foreach($config as $k=>&$v){
+			// 验证
+			if(!isset($v['validate'])){
+				$v['validate'] = false;
+			}else{
+				if(!isset($v['validate']['reg'])){
+					$v['validate']['reg'] = '\S+';
+				}else{
+					// 使用js正则对象，去边两边的/
+					$v['validate']['reg'] = trim($v['validate']['reg'], '/');
+				}
+				if(!isset($v['validate']['err'])){
+					$v['validate']['err'] = $v['title'].'不能为空';
+				}
+			}
+			// 默认选项
+			if(in_array($v['type'], array('select', 'radio', 'checkbox'))){
+				foreach($v['option'] as $ko=>&$vo){
+					$vo['checked'] = isset($vo['checked']) ?: false; 
+				}
+			}
+
+			// 图片选项
+			if(in_array($v['type'], array('upload'))){
+				// 后缀限制
+				if(isset($v['option']['ext'])){
+					$v['option']['exts'] = implode('|', $v['option']['ext']);
+				}else{
+					$v['option']['exts'] = 'gif|jpg|jpeg|bmp|png|swf';
+				}
+				if(!isset($v['option']['size'])){
+					$v['option']['size'] = 3072;
+				}
+				if(!isset($v['option']['path'])){
+					$v['option']['path'] = '';
+				}
+				if(!isset($v['option']['num'])){
+					$v['option']['num'] = 1;
+				}
+			}
+
+			if($v['type'] == 'date'){
+				if(!isset($v['option']['type'])){
+					$v['option']['type'] = 'date';
+				}
+				if(!isset($v['option']['format'])){
+					$v['option']['format'] = 'yyyy-MM-dd';
+				}
+				if(!isset($v['option']['min']) || empty($v['option']['min'])){
+					$v['option']['min'] = '1900-01-01';
+				}
+				if(!isset($v['option']['max']) || empty($v['option']['max'])){
+					$v['option']['max'] = '3000-01-01';
+				}
+				if(!isset($v['option']['value'])){
+					$v['option']['value'] = '';
+				}
+			}
+		} 
+		// var_dump($config);die;
+		return $config;
+	}
+
+	protected function loadFormFieldFile()
+	{
+		// 路径在与model同级的field文件夹下		
+		if(empty($config)){
+			$path = dirname(__DIR__);
+			$file = $path . DS . 'field' . DS . $this->form_field_file;		
+			$config = '';
+			if(is_file($file)){
+				$config = require_once $file;
+				
+			}
+		}
+		$this->setFormConfig($config);		
+	}	
 }

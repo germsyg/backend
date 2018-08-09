@@ -236,4 +236,9 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
+
+    'table' => array(
+        'page' => 1,
+        'limit' => 10,
+    ),
 ];
