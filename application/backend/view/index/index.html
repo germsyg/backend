@@ -3,22 +3,107 @@
     <!-- 顶部开始 -->
 <div class="container">
     <div class="logo"><a href="./index.html">x-admin</a></div>
-    <div class="left_open">
+    <!-- <div class="left_open">
         <i title="展开左侧栏" class="iconfont">&#xe699;</i>
-    </div>
-    <!-- <ul class="layui-nav left fast-add" lay-filter="">
+    </div> -->
+
+    <ul class="layui-nav left">
+    {volist name="menu" id="m1"}
+        {notempty name="$m1.url"}
+        <li class="layui-nav-item"><a href="">{$m1.name}</a></li>
+        {else /}
         <li class="layui-nav-item">
-            <a href="javascript:;">+新增</a>
-            <dl class="layui-nav-child">                
-                <dd><a onclick="x_admin_show('资讯','http://www.baidu.com')"><i class="iconfont">&#xe6a2;</i>资讯</a></dd>
-                <dd><a onclick="x_admin_show('图片','http://www.baidu.com')"><i class="iconfont">&#xe6a8;</i>图片</a></dd>
-                <dd><a onclick="x_admin_show('用户','http://www.baidu.com')"><i class="iconfont">&#xe6b8;</i>用户</a></dd>
+            <a href="javascript:;">{$m1.name}&nbsp;</a>
+            <dl class="layui-nav-child" style="/*display: inline;*/ width: 320px;">
+                <div class="layui-row">
+                    <div class="layui-col-md6">
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设尺寸置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                    </div>
+                    <div class="layui-col-md6">
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>                       
+                    </div>
+                </div>
             </dl>
         </li>
-    </ul> -->
+        {/notempty}
+    {/volist}
+
+
+        <li class="layui-nav-item">
+            <a href="javascript:;">产品&nbsp;&nbsp;&nbsp;</a>
+            <dl class="layui-nav-child" style="/*display: inline;*/ width: 320px;">
+                <div class="layui-row">
+                    <div class="layui-col-md6">
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设尺寸置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                    </div>
+                    <div class="layui-col-md6">
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>
+                        <ul class="menu">
+                            <h4 >title kk</h4>
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                            <li >设置字体的尺寸</li>                    
+                        </ul>                       
+                    </div>
+                </div>
+            </dl>
+        </li>
+    </ul>
     <ul class="layui-nav right" lay-filter="">
         <li class="layui-nav-item">
-            <a href="javascript:;">{$Think.session.admin.name}</a>
+            <a href="javascript:;">{$Think.session.admin.name}&nbsp;&nbsp;&nbsp;</a>
             <dl class="layui-nav-child">
                 <!-- 二级菜单 -->
                 <dd><a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a></dd>
@@ -33,63 +118,10 @@
 <!-- 顶部结束 -->
 <!-- 中部开始 -->
 <!-- 左侧菜单开始 -->
-<div class="left-nav">
+<div class="left-nav" style="display: none;">
     <div id="side-nav">
         <ul id="nav">
-        {volist name="menu" id="m1"}
-            <li>
-                {notempty name="$m1.url"}
-                <a _href="{:url($m1.url)}">
-                {else /}
-                <a href="javascript:;">
-                {/notempty}                    
-                    {if $m1.icon}
-                    <i class="iconfont">{$m1.icon}</i>
-                    {else/}
-                    <i class="iconfont">&#xe724;</i>
-                    {/if}
-                    <cite>{$m1.name}</cite>
-                    {notempty name="$m1.child"}
-                    <i class="iconfont nav_right">&#xe697;</i>                    
-                    {/notempty}
-                </a>
-                {notempty name="$m1.child"}
-                    <ul class="sub-menu">
-                    {volist name="$m1.child" id="m2"}
-                        <li>
-                            {notempty name="$m2.url"}
-                            <a _href="{:url($m2.url)}">
-                            {else /}
-                            <a href="javascript:;">
-                            {/notempty}                                
-                                {if $m2.icon}
-                                <i class="iconfont">{$m2.icon}</i>
-                                {elseif !$m2.child}
-                                <i class="iconfont">&#xe6a7;</i>
-                                {/if}
-                                <cite>{$m2.name}</cite>
-                                {notempty name="$m2.child"}
-                                <i class="iconfont nav_right">&#xe697;</i>                                
-                                {/notempty}
-                            </a>
-                            {notempty name="$m2.child"}
-                                <ul class="sub-menu">
-                                {volist name="$m2.child" id="m3"}
-                                    <li>
-                                        <a _href="{:url($m3.url)}">
-                                            <i class="iconfont">&#xe6a7;</i>
-                                            <cite>{$m3.name}</cite>
-                                        </a>
-                                    </li>                    
-                                {/volist}
-                                </ul>
-                            {/notempty}
-                        </li>                    
-                    {/volist}
-                    </ul>
-                {/notempty}
-            </li>
-        {/volist}
+        
         <!--
             <li>
                 <a _href="{:url('Menu/index')}">
