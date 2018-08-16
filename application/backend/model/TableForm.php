@@ -13,7 +13,7 @@ class TableForm extends Backend
 	protected $table = '';
 
 	// 查询数据表字段文件
-	protected $table_field_file = '';
+	protected $table_field_file;
 
 	protected $table_config;
 
@@ -426,18 +426,16 @@ class TableForm extends Backend
 		$this->loadFormFieldFile();
 
 		$info['field'] = $this->parseFormField();
-		// var_dump($this->form_data);
-		// var_dump($info['field']);die;
-		$info = array_merge($info, $this->form_data);
-		
+		// 合并数据
+		$info = array_merge_recursive($info, $this->form_data);
 		$view = view('table_form/form');	
-		// var_dump($info);die;				
 		$view->assign('info', $info);
 		$view->send();
 	}
 
 	protected function assignData($data)
 	{
+		// var_dump($data);
 		$this->form_data = array_merge($this->form_data, $data);
 	}
 
@@ -504,7 +502,9 @@ class TableForm extends Backend
 					$v['option']['value'] = '';
 				}
 			}
-		} 
+		}
+
+		$config = array_column($config, NULL, 'field');
 		// var_dump($config);die;
 		return $config;
 	}

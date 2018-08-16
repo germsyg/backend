@@ -26,7 +26,7 @@
             {case value="text"}
             <div class="layui-form-item">
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline">
                     <input type="text" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
@@ -40,7 +40,7 @@
             {case value="password"}
             <div class="layui-form-item">
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline">
                     <input type="password" id="{$vo.field}" name="{$vo.field}"   {if $vo.validate}lay-verify="{$vo.field}"{/if} autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">
@@ -54,7 +54,7 @@
             {case value="textarea"}
             <div class="layui-form-item" >
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">
                     <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if}>{$info['data'][$vo.field]|default=''}</textarea>
@@ -68,7 +68,7 @@
             {case value="editor"}
             <div class="layui-form-item" >
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">
                     <textarea name="{$vo.field}" placeholder="{$vo.tip|default=''}" class="layui-textarea" {if $vo.validate}lay-verify=""{/if} id="textarea_{$vo.field}">{$info['data'][$vo.field]|default=''}</textarea>
@@ -105,7 +105,7 @@
             {case value="upload"}
             <div class="layui-form-item" >
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline" style="width: 800px;">
                     <button type="button" class="layui-btn js-upload-btn" id="upload_{$vo.field}" num="{$vo.option.num}" title="数量限制 {$vo.option.num}">
@@ -162,7 +162,7 @@
             {case value="select"}
             <div class="layui-form-item" >
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline" >
                     <select name="{$vo.field}" {if $vo.validate}lay-verify="required"{/if}>
@@ -185,7 +185,7 @@
             {case value="radio"}
             <div class="layui-form-item" >
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">                    
                     {volist name="vo.option" id="o"}
@@ -206,7 +206,7 @@
             {case value="checkbox"}
             <div class="layui-form-item">
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline" style="width: 500px;">                    
                     {volist name="vo.option" id="o"}
@@ -226,7 +226,7 @@
             {case value="date"}
             <div class="layui-form-item">
                 <label for="{$vo.field}" class="layui-form-label">
-                    {$vo.title}: 
+                    {$vo.title} : 
                 </label>
                 <div class="layui-input-inline">
                     <input type="text" id="{$vo.field}" name="{$vo.field}"  autocomplete="off" class="layui-input" value="{$info['data'][$vo.field]|default=''}">

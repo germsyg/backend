@@ -7,6 +7,11 @@ use think\Config;
 
 class Login extends Backend
 {
+    /**
+     * 登陆页
+     * @author XZJ 2018-08-09T09:40:40+0800
+     * @return [type] [description]
+     */
     public function index()
     {                               
         if(session::get('admin')){            
