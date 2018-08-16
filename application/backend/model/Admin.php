@@ -8,17 +8,65 @@ use think\Request;
 class Admin extends TableForm
 {
 
+	/**
+	 * 管理员列表页
+	 * @author XZJ 2018-08-14T19:25:12+0800
+	 * @return [type] [description]
+	 */
 	public function index()
 	{
 		$this->setTable('admin');
-		$this->setTableFieldFile('admin.php');
-		$this->setListCallback($this, 'format');
-		$this->setSearchCallback($this, 'formatSearch');
-		$this->setWhereCallback($this, 'formatWhere');
+		$this->setTableFieldFile('admin_table.php');
+		$this->setListCallback($this, 'formatList');
+		
 		parent::table();
 	}
 
-	public function format($res)
+	/**
+	 * 编辑页
+	 * @author XZJ 2018-08-14T19:25:23+0800
+	 * @param  integer $id [description]
+	 */
+	public function add($id=0)
+	{
+		$this->setFormFieldFile('admin_form.php');
+		$role = model('Role')->getRole();
+		foreach($role as $k=>$v){            
+            $options[$v['name']]['value'] = $v['id'];
+            $options[$v['name']]['checked'] = 0;
+        }
+        
+		if($id){
+			$info['data'] = $this->getAdmin($id);        	        
+			// var_dump($info['user']);
+	        $user_role = explode(',', $info['data']['role_ids']);
+	        $info['data']['role_ids'] = $user_role;
+	        $info['data']['pwd'] = '';
+	        if(!empty($user_role)){
+	            foreach($options as $k=>$v){
+	                if(in_array($v['value'], $user_role)){
+	                    $role[$k]['checked'] = 1;
+	                }
+	            }
+	        }
+	        $info['role'] = $role;
+        	$this->assignData($info);                   
+		}
+		// var_dump($options);
+		$info['field']['role_ids']['option'] = $options;
+		// var_dump($info);die;
+		$this->assignData($info);                   
+		
+        parent::form(); 
+	}
+
+	/**
+	 * 格式化列表
+	 * @author XZJ 2018-08-14T19:25:39+0800
+	 * @param  [type] $res [description]
+	 * @return [type]      [description]
+	 */
+	public function formatList($res)
 	{				
 		$role = model('Role')->getRole();		
 		foreach($res as $k=>&$v){
@@ -29,29 +77,29 @@ class Admin extends TableForm
 			}
 			$v['status'] = $this->buildSwitch('正常|禁用',  $v['status'], $v['status']?:0 );		
 			$v['reg_time'] = date('Y-m-d H:i:s', $v['reg_time']);
-			$v['operate'] = $this->buildBtn('编辑', url('Admin/edit', ['id'=>$v['id']]));
+			$v['operate'] = $this->buildBtn('编辑', url('edit', ['id'=>$v['id']]));
 		}unset($v);		
 		
 		return $res;
 	}
 
-	public function formatWhere($where)
-	{
-		return $where;
-	}
-
-	public function formatSearch($search)
-	{
-		return $search;
-	}
-
-
-
+	/**
+	 * 获取管理员信息
+	 * @author XZJ 2018-08-14T19:25:56+0800
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
 	public function getAdmin($id)
 	{
 		return Admin::get($id)->toArray();
 	}	
 
+	/**
+	 * 获取管理员权限信息
+	 * @author XZJ 2018-08-14T19:26:18+0800
+	 * @param  string $id [description]
+	 * @return [type]     [description]
+	 */
 	public function getAdminAuth($id='')
 	{
 		if(!$id){
