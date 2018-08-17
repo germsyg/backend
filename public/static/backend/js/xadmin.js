@@ -107,6 +107,29 @@ $(function () {
         }
     })
 
+    // 顶部菜单栏
+    $('#top-nav li').click(function(event){
+        var url = $(this).children('a').attr('_href');
+        if(url == undefined){
+            return ;
+        }
+        var title = $(this).children('a').html();
+        var index  = $('#top-nav li').index($(this));
+        $(this).removeClass('layui-this');
+        $(this).closest('.layui-nav-child').removeClass('layui-show');
+        for (var i = 0; i <$('.x-iframe').length; i++) {
+            if($('.x-iframe').eq(i).attr('tab-id')==index+1){
+                tab.tabChange(index+1);
+                event.stopPropagation();
+                return;
+            }
+        };
+        
+        tab.tabAdd(title, url, index+1);
+        tab.tabChange(index+1);
+        event.stopPropagation();
+    });
+
     //左侧菜单效果
     // $('#content').bind("click",function(event){
     $('.left-nav #nav li').click(function (event) {

@@ -7,103 +7,65 @@
         <i title="展开左侧栏" class="iconfont">&#xe699;</i>
     </div> -->
 
-    <ul class="layui-nav left">
+    <ul class="layui-nav left" id="top-nav">
     {volist name="menu" id="m1"}
         {notempty name="$m1.url"}
-        <li class="layui-nav-item"><a href="">{$m1.name}</a></li>
+        <li class="layui-nav-item"><a href="javascript:;" _href="{:url($m1.url)}">{$m1.name}</a></li>
         {else /}
         <li class="layui-nav-item">
-            <a href="javascript:;">{$m1.name}&nbsp;</a>
-            <dl class="layui-nav-child" style="/*display: inline;*/ width: 320px;">
+            <a href="javascript:;" style="padding-right: 16px;">{$m1.name}</a>
+            {if count($m1.child) > 3}
+            <dl class="layui-nav-child" style="min-width: 320px;">
+            {else/}
+            <dl class="layui-nav-child" style="min-width: 160px;">
+            {/if}
                 <div class="layui-row">
+                    {if count($m1.child) > 3}
                     <div class="layui-col-md6">
+                        {volist name="m1.child" id="c" mod="1"}
+                        {eq name="mod" value="1"}
                         <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设尺寸置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
+                            <h4>{$key}{$mod}</h4>
+                            {volist name="c" id="c2"}
+                            <li><a _href="{:url($c2.url)}">{$c2.name}</a></li>                    
+                            {/volist}
                         </ul>
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                        </ul>
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                        </ul>
+                        {/eq}
+                        {/volist}                        
                     </div>
                     <div class="layui-col-md6">
+                        {volist name="m1.child" id="c" mod="2"}
+                        {eq name="mod" value="0"}
                         <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
+                            <h4>{$key}{$mod}</h4>
+                            {volist name="c" id="c2"}
+                            <li><a _href="{:url($c2.url)}">{$c2.name}</a></li>                   
+                            {/volist}
                         </ul>
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                        </ul>                       
+                        {/eq}
+                        {/volist}                        
                     </div>
+                    {else /}
+                    <div class="layui-col-md12">
+                        {volist name="m1.child" id="c"}
+                        <ul class="menu">
+                            <h4>{$key}</h4>
+                            {volist name="c" id="c2"}
+                            <li><a _href="{:url($c2.url)}">{$c2.name}</a></li>                   
+                            {/volist}
+                        </ul>
+                        {/volist}                        
+                    </div>                    
+                    {/if}                    
                 </div>
             </dl>
         </li>
         {/notempty}
-    {/volist}
-
-
-        <li class="layui-nav-item">
-            <a href="javascript:;">产品&nbsp;&nbsp;&nbsp;</a>
-            <dl class="layui-nav-child" style="/*display: inline;*/ width: 320px;">
-                <div class="layui-row">
-                    <div class="layui-col-md6">
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设尺寸置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                        </ul>
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                        </ul>
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                        </ul>
-                    </div>
-                    <div class="layui-col-md6">
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                        </ul>
-                        <ul class="menu">
-                            <h4 >title kk</h4>
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                            <li >设置字体的尺寸</li>                    
-                        </ul>                       
-                    </div>
-                </div>
-            </dl>
-        </li>
+    {/volist}        
     </ul>
     <ul class="layui-nav right" lay-filter="">
         <li class="layui-nav-item">
-            <a href="javascript:;">{$Think.session.admin.name}&nbsp;&nbsp;&nbsp;</a>
+            <a href="javascript:;">{$Think.session.admin.name}&nbsp;</a>
             <dl class="layui-nav-child">
                 <!-- 二级菜单 -->
                 <dd><a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a></dd>
