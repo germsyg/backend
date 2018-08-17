@@ -30,7 +30,7 @@ class Index extends Backend
                 $menu[$k]['child'] = $child_group;
             }
         }
-        var_dump($menu);die;
+        // var_dump($menu);die;
         $this->assign('menu', $menu);
         return $this->fetch();
     }

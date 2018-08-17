@@ -22,29 +22,30 @@
                 <div class="layui-row">
                     {if count($m1.child) > 3}
                     <div class="layui-col-md6">
-                        {volist name="m1.child" id="c" mod="1"}
-                        {eq name="mod" value="1"}
+                        {volist name="m1.child" id="c" key="k1"}                        
+                        {if $k1< ceil(count($m1.child)/2)+1}
                         <ul class="menu">
-                            <h4>{$key}{$mod}</h4>
-                            {volist name="c" id="c2"}
-                            <li><a _href="{:url($c2.url)}">{$c2.name}</a></li>                    
-                            {/volist}
-                        </ul>
-                        {/eq}
-                        {/volist}                        
-                    </div>
-                    <div class="layui-col-md6">
-                        {volist name="m1.child" id="c" mod="2"}
-                        {eq name="mod" value="0"}
-                        <ul class="menu">
-                            <h4>{$key}{$mod}</h4>
-                            {volist name="c" id="c2"}
+                            <h4>{$key}</h4>
+                            {volist name="c" id="c2" key="k2"}
                             <li><a _href="{:url($c2.url)}">{$c2.name}</a></li>                   
                             {/volist}
                         </ul>
-                        {/eq}
+                        {/if}
                         {/volist}                        
                     </div>
+                   <div class="layui-col-md6">
+                        {volist name="m1.child" id="c" key="k1"}                        
+                        {if $k1> ceil(count($m1.child)/2)}
+                        <ul class="menu">
+                            <h4>{$key}</h4>
+                            {volist name="c" id="c2" key="k2"}
+                            <li><a _href="{:url($c2.url)}">{$c2.name}</a></li>                   
+                            {/volist}
+                        </ul>
+                        {/if}
+                        {/volist}                        
+                    </div>
+                    
                     {else /}
                     <div class="layui-col-md12">
                         {volist name="m1.child" id="c"}
