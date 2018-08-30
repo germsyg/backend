@@ -29,7 +29,7 @@
                 </th>
                 <th width="70">ID</th>
                 <th>菜单名</th>
-                <!-- <th width="50">排序</th> -->
+                <th width="50">分组</th>
                 <th width="50">状态</th>
                 <th width="220">操作</th>
         </thead>
@@ -53,9 +53,9 @@
                     {/if}
                     {$m.name}
                 </td>
-                <!-- <td>
-                    <input type="text" class="layui-input x-sort" name="order" value="{$m.sort}">
-                </td> -->
+                <td>
+                    {$m.group}
+                </td>
                 <td>
                     <input type="checkbox" name="status" lay-text="显示|隐藏" {if $m.status==1}checked{/if} lay-skin="switch" lay-filter="status" value="{$m.status}">
                 </td>

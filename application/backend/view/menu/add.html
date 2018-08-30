@@ -44,6 +44,17 @@
             <div class="layui-form-mid layui-word-aux">
                 <span class="x-red">*</span>
             </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="group" class="layui-form-label">
+                <span class="x-red">*</span>菜单分组
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="group" name="group" required="" lay-verify="" autocomplete="off" class="layui-input" value="{$info.group|default=''}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*用于菜单栏分组</span>
+            </div>
         </div>  
         <div class="layui-form-item">
             <label for="icon" class="layui-form-label">

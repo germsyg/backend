@@ -231,7 +231,7 @@ xblock{
     font-size: 18px;
     padding-left: 20px;
     line-height: 45px;
-    width: 200px;
+    width: 80px;
 }
 .container .right{
     background-color:rgba(0,0,0,0);
@@ -267,7 +267,7 @@ xblock{
     line-height: 45px;
 }
 .container .layui-nav-more{
-    top: 20px;
+    top: 23px;
 }
 .container .layui-nav-child{
     top: 50px;
@@ -275,9 +275,11 @@ xblock{
 .container .layui-nav-child i{
     margin-right: 10px;
 }
-.layui-nav .layui-nav-item a{
+.layui-nav .layui-nav-item a{    
     color: #fff;
     cursor: pointer;
+    padding: 0 8px;
+    letter-spacing: 2px;
 }
 .layui-nav .layui-nav-child a{
     color: #333;
@@ -371,7 +373,7 @@ xblock{
     top: 46px;
     right: 0;
     bottom: 42px;
-    left: 221px;
+    left: 0px;
     overflow: hidden;
     z-index: 1;
 }
@@ -500,7 +502,7 @@ table th, table td {
         display: none;
     }
     .container .logo a{
-        width: 140px;
+        width: 70px;
     }
     .container .left_open {
         /*float: right;*/
@@ -520,6 +522,18 @@ table th, table td {
         margin: 10px;
     }
 }
+
+.layui-nav-child .menu {
+    color: #000; 
+    line-height: 28px; 
+    padding: 0 14px;
+    margin-bottom: 10px; 
+    letter-spacing: 1px;
+}
+.layui-nav-child .menu h4{font-weight: bold; font-size: 15px; cursor: default;}
+.layui-nav-child .menu li{font-size: 13px;cursor: pointer; padding-left: 5px;}
+.layui-nav-child .menu li:hover{background-color: #f2f2f2;}
+    
 
 
 .tip-layer{position: relative;}
